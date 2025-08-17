@@ -1,0 +1,34 @@
+{
+  "editor.tabSize": 2,
+  "editor.detectIndentation": true,
+  "editor.inlineSuggest.enabled": true,
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.addMissingImports": "explicit",
+    "source.organizeImports": "explicit",
+    "source.fixAll.eslint": "explicit",
+  },
+  "editor.quickSuggestions": {
+    "strings": true
+  },
+  "scss.lint.unknownAtRules": "ignore",
+  "tailwindCSS.experimental.classRegex": [
+    [
+      "cva\\(([^)]*)\\)",
+      "[\"'`]([^\"'`]*).*?[\"'`]"
+    ],
+    [
+      "cx\\(([^)]*)\\)",
+      "(?:'|\"|`)([^']*)(?:'|\"|`)"
+    ]
+  ],
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
+}
