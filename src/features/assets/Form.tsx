@@ -39,12 +39,16 @@ const Form = ({ id, data, handleModal, handleSuccess }: FormProps) => {
     keyword: keywordCategory,
   });
 
+  console.log('form', form);
+
   return (
     <form
       onSubmit={e => {
         const result = validate(e);
+
+        console.log('form', form);
         if (result && !id) post(convertFormParams(form));
-        if (result && id) update(form);
+        if (result && id) update(convertFormParams(form));
       }}
     >
       <div>
@@ -80,20 +84,6 @@ const Form = ({ id, data, handleModal, handleSuccess }: FormProps) => {
             onSelect={handleSelect}
             onSearchNotFound={value => setKeywordCategory(value)}
             loading={loadingGetCategories}
-          />
-        </div>
-        <div className="mt-6">
-          <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-            Quantity
-          </label>
-          <Input
-            id="quantity"
-            type="number"
-            value={form?.quantity}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            error={!!errors.quantity}
-            hint={errors.quantity}
           />
         </div>
       </div>

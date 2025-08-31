@@ -3,8 +3,7 @@ import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 
 import { defaultParams } from '@/data/Table';
-import AssetsFeature from '@/features/assets';
-import { get, queries } from '@/services/asset';
+import ApprovalFeature from '@/features/approval';
 import ComponentCard from '@/ui/components/common/ComponentCard';
 import PageBreadcrumb from '@/ui/components/common/PageBreadCrumb';
 import { buildQueryUrl } from '@/utils';
@@ -31,18 +30,13 @@ const AssetsPage = async ({
 
   const queryClient = new QueryClient();
 
-  await queryClient.prefetchQuery({
-    queryKey: [queries.GET_ASSETS, params],
-    queryFn: () => get(params),
-  });
-
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <div>
-        <PageBreadcrumb pageTitle="Assets Data" breadCrumbs={[{ text: 'Assets Data', url: '' }]} />
+        <PageBreadcrumb pageTitle="Approval Data" />
         <div className="space-y-6">
           <ComponentCard>
-            <AssetsFeature params={params} />
+            <ApprovalFeature />
           </ComponentCard>
         </div>
       </div>

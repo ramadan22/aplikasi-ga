@@ -1,4 +1,4 @@
-import ApprovalDocument from '@/features/approval';
+import ApprovalDocument from '@/features/approval/Document';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {

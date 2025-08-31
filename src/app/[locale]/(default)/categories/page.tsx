@@ -39,7 +39,10 @@ const CategoriesPage = async ({
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <div>
-        <PageBreadcrumb pageTitle="Categories Data" />
+        <PageBreadcrumb
+          pageTitle="Categories Data"
+          breadCrumbs={[{ text: 'Categories Data', url: '' }]}
+        />
         <div className="space-y-6">
           <ComponentCard>
             <CategoriesFeature params={params} />

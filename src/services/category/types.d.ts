@@ -8,6 +8,7 @@ export type Field = {
   id?: ID;
   name: string;
   prefix: string;
+  is_device: boolean;
 };
 
 export type Data = {

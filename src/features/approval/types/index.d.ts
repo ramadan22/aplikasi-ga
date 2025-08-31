@@ -1,4 +1,3 @@
-import { DataAssetsByName, Field } from '@/services/asset/types';
 import { PaginationParams } from '@/types/ResponseApi';
 
 export type Props = {
@@ -11,20 +10,26 @@ export type Option = {
 };
 
 export type FormParams = {
-  category?: Option | null;
-} & Field;
+  submissionType: string;
+  approved_by: Option[];
+  note: string;
+  asset_request: {
+    idx: string;
+    sn: string;
+    name: string;
+    category_id: string;
+  }[];
+};
 
 export type ActionTable = {
   id: string | number | null;
   action: 'delete' | 'edit' | '';
-  data?: DataAssetsByName;
+  data?: FormParams;
 };
-
-export type DataAssetsByName = DataAssetsByName;
 
 export type FormProps = {
   id: string;
-  data: DataAssetsByName | undefined;
+  data: FormParams | undefined;
   handleSuccess: (value: boolean) => void;
   handleModal: (value: boolean) => void;
 };

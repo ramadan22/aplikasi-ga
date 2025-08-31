@@ -9,6 +9,7 @@ interface ModalProps {
   className?: string;
   children: React.ReactNode;
   showCloseButton?: boolean;
+  size?: 'sm' | 'md' | 'lg';
 }
 
 export const Modal: React.FC<ModalProps> = ({
@@ -17,8 +18,21 @@ export const Modal: React.FC<ModalProps> = ({
   children,
   className = '',
   showCloseButton = true,
+  size,
 }) => {
   const modalRef = useRef<HTMLDivElement>(null);
+
+  const getSizeClass = (size: 'sm' | 'md' | 'lg' = 'sm') => {
+    switch (size) {
+      case 'md':
+        return 'sm:max-w-2xl';
+      case 'lg':
+        return 'sm:max-w-4xl';
+      case 'sm':
+      default:
+        return 'sm:max-w-lg';
+    }
+  };
 
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
@@ -51,15 +65,19 @@ export const Modal: React.FC<ModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center overflow-y-auto z-[99] sm:pt-20 pt-0 sm:pb-5 pb-0">
+    <div className="fixed inset-0 overflow-y-auto z-[99] sm:py-5 py-0">
       {/* Backdrop */}
-      <div className="fixed inset-0 bg-gray-400/50 backdrop-blur-[32px]" onClick={onClose} />
+      <div
+        className="fixed inset-0 sm:bg-gray-400/50 sm:backdrop-blur-[32px] bg-white dark:bg-gray-900"
+        onClick={onClose}
+      />
 
       {/* Modal content */}
       <div
         ref={modalRef}
         className={cn(
-          'relative w-full h-full p-4 bg-white dark:bg-gray-900 sm:rounded-3xl sm:max-w-lg sm:h-auto sm:p-6',
+          'relative w-full h-full p-4 border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] sm:rounded-3xl sm:max-w-lg sm:h-auto sm:p-6 mx-auto',
+          getSizeClass(size),
           className,
         )}
         onClick={e => e.stopPropagation()}
@@ -86,7 +104,10 @@ export const Modal: React.FC<ModalProps> = ({
             </svg>
           </button>
         )}
-        <div>{children}</div>
+        <div>
+          {children}
+          <div className="pb-5" />
+        </div>
       </div>
     </div>
   );

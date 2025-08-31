@@ -4,7 +4,7 @@
 
 import { PaginationSorterTypes } from '@/types/ResponseApi';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
-import { FaRegEdit, FaRegTrashAlt } from 'react-icons/fa';
+import { FaEye, FaRegEdit, FaRegTrashAlt } from 'react-icons/fa';
 import { GrTableAdd } from 'react-icons/gr';
 
 import Button from '@/ui/components/simple/button/Button';
@@ -26,6 +26,10 @@ export type TableHeaderField = {
 };
 
 export type PropsTypes = {
+  isButtonDetail?: boolean;
+  isButtonDelete?: boolean;
+  isButtonEdit?: boolean;
+  isButtonAdd?: boolean;
   headers: TableHeaderField[] | [];
   data: any[] | undefined;
   isLoading?: boolean;
@@ -33,13 +37,17 @@ export type PropsTypes = {
   handleButtonAdd?: () => void;
   meta?: PaginationSorterTypes;
   handleButtonAction?: (
-    value: 'add' | 'edit' | 'delete' | null,
+    value: 'add' | 'edit' | 'delete' | 'detail' | null,
     id: string | number | null,
     data?: object,
   ) => void;
 };
 
 const TableDataUI = ({
+  isButtonDetail,
+  isButtonDelete = true,
+  isButtonEdit = true,
+  isButtonAdd = true,
   headers,
   data,
   meta,
@@ -48,17 +56,19 @@ const TableDataUI = ({
   handleChangeParams,
 }: PropsTypes) => (
   <div className="w-full overflow-hidden">
-    <div className="flex items-center justify-between pb-4">
-      <div className="relative flex-1 pr-5" />
-      <Button
-        size="xs"
-        onClick={() => {
-          if (handleButtonAction) handleButtonAction('add', null);
-        }}
-      >
-        Add Data
-      </Button>
-    </div>
+    {isButtonAdd && (
+      <div className="flex items-center justify-between pb-4">
+        <div className="relative flex-1 pr-5" />
+        <Button
+          size="xs"
+          onClick={() => {
+            if (handleButtonAction) handleButtonAction('add', null);
+          }}
+        >
+          Add Data
+        </Button>
+      </div>
+    )}
 
     <div className="max-w-full overflow-x-auto">
       <div className="min-w-full">
@@ -106,26 +116,42 @@ const TableDataUI = ({
                     ))}
                   <TableCell className="p-4 text-center text-theme-sm w-[100px] sticky right-0 z-[1] bg-white dark:bg-[#171f2e]">
                     <div className="flex items-center justify-center gap-x-2">
-                      <Button
-                        className="p-2.5"
-                        onClick={() => {
-                          const id =
-                            item[`${headers.find(item2 => item2.header === 'ID')?.key}`] || null;
-                          if (handleButtonAction) handleButtonAction('edit', id, item);
-                        }}
-                      >
-                        <FaRegEdit size={12} />
-                      </Button>
-                      <Button
-                        className="p-2.5 bg-error-500 dark:bg-error-500/15"
-                        onClick={() => {
-                          const id =
-                            item[`${headers.find(item2 => item2.header === 'ID')?.key}`] || null;
-                          if (handleButtonAction) handleButtonAction('delete', id, item);
-                        }}
-                      >
-                        <FaRegTrashAlt size={12} />
-                      </Button>
+                      {isButtonDetail && (
+                        <Button
+                          className="p-2.5 bg-warning-500 dark:bg-warning-500/15"
+                          onClick={() => {
+                            const id =
+                              item[`${headers.find(item2 => item2.header === 'ID')?.key}`] || null;
+                            if (handleButtonAction) handleButtonAction('detail', id, item);
+                          }}
+                        >
+                          <FaEye size={12} />
+                        </Button>
+                      )}
+                      {isButtonEdit && (
+                        <Button
+                          className="p-2.5 bg-brand-500 dark:bg-brand-500/15"
+                          onClick={() => {
+                            const id =
+                              item[`${headers.find(item2 => item2.header === 'ID')?.key}`] || null;
+                            if (handleButtonAction) handleButtonAction('edit', id, item);
+                          }}
+                        >
+                          <FaRegEdit size={12} />
+                        </Button>
+                      )}
+                      {isButtonDelete && (
+                        <Button
+                          className="p-2.5 bg-error-500 dark:bg-error-500/15"
+                          onClick={() => {
+                            const id =
+                              item[`${headers.find(item2 => item2.header === 'ID')?.key}`] || null;
+                            if (handleButtonAction) handleButtonAction('delete', id, item);
+                          }}
+                        >
+                          <FaRegTrashAlt size={12} />
+                        </Button>
+                      )}
                     </div>
                   </TableCell>
                 </TableRow>

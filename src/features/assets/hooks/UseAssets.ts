@@ -1,4 +1,12 @@
-import { deleteData, get as getApi, getById, post, queries, update } from '@/services/asset';
+import {
+  deleteData,
+  get as getApi,
+  getById,
+  getByName,
+  post,
+  queries,
+  update,
+} from '@/services/asset';
 import {
   DeleteMutationOptions,
   GetParams,
@@ -15,6 +23,12 @@ export const Get = (params: GetParams = {}) =>
   useQuery({
     queryKey: [queries.GET_ASSETS, params],
     queryFn: () => getApi(params),
+  });
+
+export const GetByName = (params: GetParams = {}) =>
+  useQuery({
+    queryKey: [queries.GET_ASSETS_BY_NAME, params],
+    queryFn: () => getByName(params),
   });
 
 export const GetById = (id: string, params: GetParams = {}) =>

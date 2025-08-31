@@ -18,6 +18,7 @@ interface InputProps {
   success?: boolean;
   error?: boolean;
   hint?: string; // Optional hint text
+  size?: 'sm' | 'md' | 'lg';
 }
 
 const Input: FC<InputProps> = ({
@@ -37,7 +38,20 @@ const Input: FC<InputProps> = ({
   success = false,
   error = false,
   hint,
+  size,
 }) => {
+  const getSizeClass = (size: 'sm' | 'md' | 'lg' = 'md') => {
+    switch (size) {
+      case 'sm':
+        return 'h-9 text-sm px-3 py-2';
+      case 'lg':
+        return 'h-14 text-lg px-5 py-3';
+      case 'md':
+      default:
+        return 'h-11 text-base px-4 py-2.5';
+    }
+  };
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (type === 'number') {
       // List karakter yang mau dicegah: 'e', 'E', '+', '-', '.', (kalau gak pakai desimal)
@@ -57,7 +71,7 @@ const Input: FC<InputProps> = ({
 
   // Determine input styles based on state (disabled, success, error)
   let inputClasses =
-    'h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800';
+    'h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3 dark:bg-gray-900 dark:text-white/90 dark:focus:border-brand-800';
 
   // Add styles for the different states
   if (disabled) {
@@ -90,7 +104,7 @@ const Input: FC<InputProps> = ({
         step={step}
         disabled={disabled}
         value={value}
-        className={cn(inputClasses, className)}
+        className={cn(inputClasses, getSizeClass(size), className)}
       />
 
       {/* Optional Hint Text */}

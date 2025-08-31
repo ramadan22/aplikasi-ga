@@ -2,28 +2,27 @@
 
 import { ValidationForm } from '@/lib/valibot';
 import { useState } from 'react';
-import { minLength, minValue, number, object, pipe, string } from 'valibot';
-import { FormParams, Option } from '../types';
+import { minLength, object, pipe, string } from 'valibot';
+import { DataAssetsByName, FormParams, Option } from '../types';
 
-const UseForm = (data: FormParams | undefined) => {
-  const minQty = 1;
-
-  console.log('data', data);
-
+const UseForm = (data: DataAssetsByName | undefined) => {
   const assetSchema = object({
     name: pipe(string(), minLength(1, 'Name is required')),
     categoryId: pipe(string(), minLength(1, 'Category is required')),
-    quantity: pipe(number('Quantity is required'), minValue(minQty, `Minimum value is ${minQty}`)),
   });
 
   const { validateForm, validateField } = ValidationForm(assetSchema);
 
   const [form, setForm] = useState<FormParams>({
-    name: '',
-    categoryId: '',
-    quantity: 0,
-    category: null,
-    ...data,
+    id: data?.id || '',
+    name: data?.name || '',
+    categoryId: data?.category.id || '',
+    category: data
+      ? {
+          label: data?.category.name,
+          value: data?.category.id,
+        }
+      : null,
   });
 
   const [errors, setErrors] = useState<{ [key: string]: string | undefined }>({});
@@ -31,9 +30,9 @@ const UseForm = (data: FormParams | undefined) => {
 
   const convertFormParams = (form: FormParams) => {
     return {
+      id: form?.id || '',
       name: form.name,
       categoryId: form.category?.value || '',
-      quantity: form.quantity,
     };
   };
 

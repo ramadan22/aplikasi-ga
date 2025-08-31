@@ -27,11 +27,7 @@ const nextConfig: NextConfig = {
       config.plugins.push(
         new ESLintPlugin({
           extensions: ['js', 'jsx', 'ts', 'tsx'],
-          emitWarning: true,
-          emitError: true,
-          failOnError: false,
-          failOnWarning: false,
-          quiet: false,
+          emitError: false,
         }),
       );
     }

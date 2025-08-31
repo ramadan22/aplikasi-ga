@@ -4,7 +4,6 @@
 import { useEffect, useState } from 'react';
 
 import { rowsPerPage } from '@/data/Table';
-import { IoChevronDownOutline } from 'react-icons/io5';
 import Button from '../button/Button';
 import Label from '../form/Label';
 import Select from '../form/Select';
@@ -55,14 +54,12 @@ const Pagination = ({
           <div className="relative">
             <Select
               className="w-auto h-[30px] p-0 pl-2 pr-5 text-xs"
+              iconClassName="mr-2"
               placeholder=""
               defaultValue={perPage}
               onChange={value => setPerPage(Number(value))}
               options={rowsPerPage}
             />
-            <span className="absolute text-gray-500 -translate-y-1/2 pointer-events-none right-1 top-1/2 dark:text-gray-400">
-              <IoChevronDownOutline size={15} />
-            </span>
           </div>
         </div>
         <div className="flex items-center justify-center text-sm font-medium dark:text-gray-400 text-black/50">

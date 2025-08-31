@@ -1,35 +1,45 @@
 'use client';
 
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useParams, usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import { defaultParams } from '@/data/Table';
-// import { messageSuccess } from '@/lib/react-toastify';
-// import DeleteConfirmModal from '@/ui/components/common/ModalConfirm';
+import { messageSuccess } from '@/lib/react-toastify';
+import DeleteConfirmModal from '@/ui/components/common/ModalConfirm';
 import TableDataUI from '@/ui/components/common/TableData';
 import { Modal } from '@/ui/components/simple/modal';
-// import { requestNotificationPermission, showNotification } from '@/utils/Notification';
 import { useModal } from '@/utils/UseModal';
 import { handlePaginationChange } from '@/utils/UseTable';
+import { DataAssetsByName, Props } from '../assets/types';
 import Form from './Form';
-// import { Delete, Get } from './hooks/UseAssets';
+import { Delete, GetByName } from './hooks/UseAssets';
 import UseStable from './hooks/UseTable';
 
-const ApprovalFeature = () => {
+const AssetsByNameFeature = ({ params }: Props) => {
   const router = useRouter();
   const pathname = usePathname();
+  const getParams = useParams();
   const searchParams = useSearchParams();
 
-  const { tableHeaders, action, setAction, DummyApprovals } = UseStable();
+  const { tableHeadersAssetByName, action, setAction } = UseStable();
   const { isOpen, openModal, closeModal } = useModal();
 
-  // const { data: assets, isLoading, refetch } = Get(params);
-  // const { mutate: deleteData, isPending: pendingDeleteData } = Delete({
-  //   onSuccess: res => {
-  //     messageSuccess(res.message);
-  //     modalClosed();
-  //     refetch();
-  //   },
-  // });
+  const {
+    data: assets,
+    isLoading,
+    refetch,
+  } = GetByName({ ...params, name: `${getParams.name || ''}` });
+
+  const { mutate: deleteData, isPending: pendingDeleteData } = Delete({
+    onSuccess: async res => {
+      messageSuccess(res.message);
+      modalClosed();
+      const refreshed = await refetch();
+      if (!refreshed.data?.data || refreshed.data.data.length === 0) {
+        router.push('/assets');
+        return;
+      }
+    },
+  });
 
   const modalClosed = () => {
     closeModal();
@@ -39,9 +49,11 @@ const ApprovalFeature = () => {
   return (
     <>
       <TableDataUI
-        headers={tableHeaders}
-        data={DummyApprovals}
-        // isLoading={isLoading}
+        isButtonAdd={false}
+        isButtonDetail={false}
+        headers={tableHeadersAssetByName}
+        data={assets?.data}
+        isLoading={isLoading}
         handleChangeParams={(key, value) => {
           handlePaginationChange({
             key,
@@ -51,40 +63,41 @@ const ApprovalFeature = () => {
             router,
           });
         }}
-        // handleButtonAction={(value, id, data) => {
-        handleButtonAction={value => {
+        handleButtonAction={(value, id, data) => {
           if (value === 'add') openModal();
-          // if (value === 'edit' || value === 'delete')
-          //   setAction({ id, action: value, data: data as FormParams });
+          if (value === 'edit' || value === 'delete')
+            setAction({ id, action: value, data: data as DataAssetsByName });
         }}
         meta={{
           // sorter: assets?.meta?.sorter || '',
           size: Number(searchParams.get('limit')) || defaultParams.size,
           page: Number(searchParams.get('page')) || defaultParams.page,
-          // total: assets?.meta?.total || 0,
-          total: 0,
+          total: assets?.meta?.total || 0,
         }}
       />
-      {/* <DeleteConfirmModal
+      <DeleteConfirmModal
         isOpen={action.action === 'delete'}
         onClose={() => modalClosed()}
         onConfirm={() => deleteData(action.id as string)}
         isLoading={pendingDeleteData}
         title="Are you sure?"
         description="This data will be permanently removed from the system."
-      /> */}
+      />
       <Modal
         isOpen={isOpen || action.action === 'edit'}
         onClose={() => modalClosed()}
         className="max-w-[700px] p-6 lg:p-10"
-        size="md"
       >
         <Form
           id={action.id as string}
           data={action.data}
-          handleSuccess={value => {
+          handleSuccess={async value => {
             if (value) {
-              // refetch();
+              const refreshed = await refetch();
+              if (!refreshed.data?.data || refreshed.data.data.length === 0) {
+                router.push('/assets');
+                return;
+              }
               modalClosed();
             }
           }}
@@ -98,4 +111,4 @@ const ApprovalFeature = () => {
   );
 };
 
-export default ApprovalFeature;
+export default AssetsByNameFeature;

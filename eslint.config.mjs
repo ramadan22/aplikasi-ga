@@ -93,6 +93,10 @@ const eslintConfig = [
         ArrayExpression: 'consistent',
         ArrayPattern: 'consistent',
       }],
+      // 'no-console': [
+      //   process.env.NODE_ENV === 'production' ? 'error' : 'warn',
+      //   { allow: ['warn', 'error'] }
+      // ],
 
       // Typescript
       '@typescript-eslint/no-explicit-any': 'error',

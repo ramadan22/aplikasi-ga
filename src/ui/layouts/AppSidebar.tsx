@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { BiCategoryAlt } from 'react-icons/bi';
+import { MdApproval } from 'react-icons/md';
 import { PiLaptop } from 'react-icons/pi';
 
 import {
@@ -58,6 +59,11 @@ const navItems: NavItem[] = [
     icon: <BiCategoryAlt size={24} />,
     name: 'Categories',
     path: '/categories',
+  },
+  {
+    icon: <MdApproval size={24} />,
+    name: 'Approval',
+    path: '/approval',
   },
   {
     icon: <CalenderIcon />,
@@ -184,7 +190,7 @@ const othersItems: NavItem[] = [
 const AppSidebar: React.FC = () => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebarStore();
   const splitPathname = usePathname();
-  const pathname = `/${splitPathname.split('/').at(-1)}`;
+  const pathname = `/${splitPathname.split('/').at(2)}`;
 
   // const t = useTranslations();
 

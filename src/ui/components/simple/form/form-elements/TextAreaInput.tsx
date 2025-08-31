@@ -14,7 +14,7 @@ const TextAreaInput = () => {
         {/* Default TextArea */}
         <div>
           <Label>Description</Label>
-          <TextArea value={message} onChange={value => setMessage(value)} rows={6} />
+          <TextArea value={message} onChange={value => setMessage(value.target.value)} rows={6} />
         </div>
 
         {/* Disabled TextArea */}
@@ -30,7 +30,7 @@ const TextAreaInput = () => {
             rows={6}
             value={messageTwo}
             error
-            onChange={value => setMessageTwo(value)}
+            onChange={value => setMessageTwo(value.target.value)}
             hint="Please enter a valid message."
           />
         </div>

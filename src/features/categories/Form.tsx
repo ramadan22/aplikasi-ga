@@ -2,12 +2,13 @@ import { messageSuccess } from '@/lib/react-toastify';
 import Button from '@/ui/components/simple/button/Button';
 import ButtonWithSpinner from '@/ui/components/simple/button/ButtonWithSpinner';
 import Input from '@/ui/components/simple/form/input/InputField';
+import Switch from '@/ui/components/simple/form/Switch';
 import { Post, Update } from './hooks/UseCategories';
 import UseForm from './hooks/UseForm';
 import { FormProps } from './types';
 
 const Form = ({ id, data, handleModal, handleSuccess }: FormProps) => {
-  const { form, handleChange, handleBlur, validate, errors } = UseForm(data);
+  const { form, handleChange, handleSwitch, handleBlur, validate, errors } = UseForm(data);
 
   const { mutate: post, isPending: pendingPost } = Post({
     onSuccess: res => {
@@ -69,6 +70,11 @@ const Form = ({ id, data, handleModal, handleSuccess }: FormProps) => {
               error={!!errors.prefix}
               hint={errors.prefix}
             />
+          </div>
+        </div>
+        <div className="mt-6">
+          <div className="relative">
+            <Switch defaultChecked={form.is_device} label="Is Device" onChange={handleSwitch} />
           </div>
         </div>
       </div>

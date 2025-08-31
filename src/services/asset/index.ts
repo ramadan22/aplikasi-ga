@@ -1,10 +1,18 @@
 import AxiosInstance from '@/lib/axios';
 import { formatDateToWIB } from '@/lib/date-fns';
 import { removeObjectKeys } from '@/utils';
-import { Data, GetByIdResponse, GetParams, GetResponse, PostParams, PostResponse } from './types';
+import {
+  GetByIdResponse,
+  GetParams,
+  GetResponse,
+  GetResponseAssetsByName,
+  PostParams,
+  PostResponse,
+} from './types';
 
 const queries = {
   GET_ASSETS: 'GET_ASSETS',
+  GET_ASSETS_BY_NAME: 'GET_ASSETS_BY_NAME',
 };
 
 const get = async (params: GetParams = {}): Promise<GetResponse> =>
@@ -12,18 +20,16 @@ const get = async (params: GetParams = {}): Promise<GetResponse> =>
     AxiosInstance.get('/api/asset', {
       params,
     })
-      .then(response => {
-        const map = (response.data.data as Data[]).map(res => ({
-          ...res,
-          category: { value: res.id, label: res.name },
-          createdAt: res.createdAt ? formatDateToWIB(res.createdAt) : '',
-        }));
+      .then(response => resolve(response.data))
+      .catch(error => reject(error?.response?.data || error));
+  });
 
-        resolve({
-          ...response.data,
-          data: map,
-        });
-      })
+const getByName = async (params: GetParams = {}): Promise<GetResponseAssetsByName> =>
+  new Promise((resolve, reject) => {
+    AxiosInstance.get(`/api/asset/name/${params.name}`, {
+      params: removeObjectKeys(params, ['name']),
+    })
+      .then(response => resolve(response.data))
       .catch(error => reject(error?.response?.data || error));
   });
 
@@ -59,4 +65,4 @@ const update = async (params: PostParams): Promise<PostResponse> => {
 const deleteData = async (id: string): Promise<PostResponse> =>
   AxiosInstance.delete(`/api/asset/${id}`).then(response => response?.data || null);
 
-export { deleteData, get, getById, post, queries, update };
+export { deleteData, get, getById, getByName, post, queries, update };

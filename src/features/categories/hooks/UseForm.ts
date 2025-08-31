@@ -11,12 +11,16 @@ const UseForm = (data: FormParams | undefined) => {
 
   const { validateForm, validateField } = ValidationForm(categorySchema);
 
-  const [form, setForm] = useState({ name: '', prefix: '', ...data });
+  const [form, setForm] = useState({ name: '', prefix: '', is_device: false, ...data });
   const [errors, setErrors] = useState<{ [key: string]: string | undefined }>({});
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
     setForm(prev => ({ ...prev, [id]: value }));
+  };
+
+  const handleSwitch = (value: boolean) => {
+    setForm(prev => ({ ...prev, is_device: value }));
   };
 
   const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
@@ -41,6 +45,7 @@ const UseForm = (data: FormParams | undefined) => {
     form,
     errors,
     handleChange,
+    handleSwitch,
     handleBlur,
     validate,
   };

@@ -3,8 +3,8 @@ import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 
 import { defaultParams } from '@/data/Table';
-import AssetsFeature from '@/features/assets';
-import { get, queries } from '@/services/asset';
+import AssetsFeature from '@/features/assets/AssetByNameFeature';
+import { getByName, queries } from '@/services/asset';
 import ComponentCard from '@/ui/components/common/ComponentCard';
 import PageBreadcrumb from '@/ui/components/common/PageBreadCrumb';
 import { buildQueryUrl } from '@/utils';
@@ -16,15 +16,18 @@ export const metadata: Metadata = {
 };
 
 const AssetsPage = async ({
+  params,
   searchParams,
 }: {
+  params: Promise<{ name: string }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) => {
-  const params = await searchParams;
+  const { name } = await params;
+  const query = await searchParams;
   const header = await headers();
   const pathname = header.get('x-pathname') || '';
 
-  if (params?.page === undefined || params?.limit === undefined) {
+  if (query?.page === undefined || query?.limit === undefined) {
     const url = buildQueryUrl(pathname, { page: defaultParams.page, limit: defaultParams.size });
     redirect(url);
   }
@@ -32,17 +35,23 @@ const AssetsPage = async ({
   const queryClient = new QueryClient();
 
   await queryClient.prefetchQuery({
-    queryKey: [queries.GET_ASSETS, params],
-    queryFn: () => get(params),
+    queryKey: [queries.GET_ASSETS_BY_NAME, { ...query, name }],
+    queryFn: () => getByName({ ...query, name }),
   });
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <div>
-        <PageBreadcrumb pageTitle="Assets Data" breadCrumbs={[{ text: 'Assets Data', url: '' }]} />
+        <PageBreadcrumb
+          pageTitle={`Assets Data ${decodeURIComponent(name)}`}
+          breadCrumbs={[
+            { text: 'Assets Data', url: '/assets' },
+            { text: decodeURIComponent(name), url: '' },
+          ]}
+        />
         <div className="space-y-6">
           <ComponentCard>
-            <AssetsFeature params={params} />
+            <AssetsFeature params={query} />
           </ComponentCard>
         </div>
       </div>
