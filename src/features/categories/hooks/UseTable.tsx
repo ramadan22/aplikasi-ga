@@ -29,6 +29,7 @@ const UseStable = () => {
     },
   ];
 
+  const [keyword, setKeyword] = useState('');
   const [action, setAction] = useState<ActionTable>({
     id: '',
     action: '',
@@ -37,6 +38,8 @@ const UseStable = () => {
 
   return {
     tableHeaders,
+    keyword,
+    setKeyword,
     action,
     setAction,
   };

@@ -19,10 +19,10 @@ const CategoriesFeature = ({ params }: Props) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const { tableHeaders, action, setAction } = UseStable();
+  const { tableHeaders, keyword, setKeyword, action, setAction } = UseStable();
   const { isOpen, openModal, closeModal } = useModal();
 
-  const { data: categories, isLoading, refetch } = Get(params);
+  const { data: categories, isLoading, refetch } = Get({ ...params, keyword });
   const { mutate: deleteData, isPending: pendingDeleteData } = Delete({
     onSuccess: res => {
       messageSuccess(res.message);
@@ -43,6 +43,11 @@ const CategoriesFeature = ({ params }: Props) => {
         data={categories?.data}
         isLoading={isLoading}
         handleChangeParams={(key, value) => {
+          if (key === 'search') {
+            setKeyword(value as string);
+            return;
+          }
+
           handlePaginationChange({
             key,
             value,

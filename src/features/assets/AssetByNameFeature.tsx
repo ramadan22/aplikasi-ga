@@ -20,14 +20,14 @@ const AssetsByNameFeature = ({ params }: Props) => {
   const getParams = useParams();
   const searchParams = useSearchParams();
 
-  const { tableHeadersAssetByName, action, setAction } = UseStable();
+  const { tableHeadersAssetByName, action, setAction, keyword, setKeyword } = UseStable();
   const { isOpen, openModal, closeModal } = useModal();
 
   const {
     data: assets,
     isLoading,
     refetch,
-  } = GetByName({ ...params, name: `${getParams.name || ''}` });
+  } = GetByName({ ...params, keyword, name: `${getParams.name || ''}` });
 
   const { mutate: deleteData, isPending: pendingDeleteData } = Delete({
     onSuccess: async res => {
@@ -55,6 +55,11 @@ const AssetsByNameFeature = ({ params }: Props) => {
         data={assets?.data}
         isLoading={isLoading}
         handleChangeParams={(key, value) => {
+          if (key === 'search') {
+            setKeyword(value as string);
+            return;
+          }
+
           handlePaginationChange({
             key,
             value,

@@ -33,6 +33,10 @@ const UseStable = () => {
       header: 'Name',
     },
     {
+      key: 'serial_number',
+      header: 'Serial Number',
+    },
+    {
       key: 'code',
       header: 'Code',
     },
@@ -52,6 +56,7 @@ const UseStable = () => {
     },
   ];
 
+  const [keyword, setKeyword] = useState('');
   const [action, setAction] = useState<ActionTable>({
     id: '',
     action: '',
@@ -63,6 +68,8 @@ const UseStable = () => {
     action,
     setAction,
     tableHeadersAssetByName,
+    keyword,
+    setKeyword,
   };
 };
 

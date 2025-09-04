@@ -18,9 +18,9 @@ const AssetsFeature = ({ params }: Props) => {
   const searchParams = useSearchParams();
   const { isOpen, openModal, closeModal } = useModal();
 
-  const { tableHeaders, setAction, action } = UseStable();
+  const { tableHeaders, setAction, action, keyword, setKeyword } = UseStable();
 
-  const { data: assets, isLoading, refetch } = Get(params);
+  const { data: assets, isLoading, refetch } = Get({ ...params, keyword });
 
   const modalClosed = () => {
     closeModal();
@@ -37,6 +37,11 @@ const AssetsFeature = ({ params }: Props) => {
         data={assets?.data}
         isLoading={isLoading}
         handleChangeParams={(key, value) => {
+          if (key === 'search') {
+            setKeyword(value as string);
+            return;
+          }
+
           handlePaginationChange({
             key,
             value,

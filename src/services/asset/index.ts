@@ -2,6 +2,7 @@ import AxiosInstance from '@/lib/axios';
 import { formatDateToWIB } from '@/lib/date-fns';
 import { removeObjectKeys } from '@/utils';
 import {
+  DataAssetsByName,
   GetByIdResponse,
   GetParams,
   GetResponse,
@@ -29,7 +30,17 @@ const getByName = async (params: GetParams = {}): Promise<GetResponseAssetsByNam
     AxiosInstance.get(`/api/asset/name/${params.name}`, {
       params: removeObjectKeys(params, ['name']),
     })
-      .then(response => resolve(response.data))
+      .then(response => {
+        const map = (response.data.data as DataAssetsByName[]).map(res => ({
+          ...res,
+          createdAt: formatDateToWIB(res.createdAt),
+        }));
+
+        resolve({
+          ...response.data,
+          data: map,
+        });
+      })
       .catch(error => reject(error?.response?.data || error));
   });
 
