@@ -10,7 +10,7 @@ import { Modal } from '@/ui/components/simple/modal';
 import { useModal } from '@/utils/UseModal';
 import { handlePaginationChange } from '@/utils/UseTable';
 import Form from './Form';
-import { Delete, Get } from './hooks/UseCategories';
+import { Delete, Get } from './hooks/UseCategory';
 import UseStable from './hooks/UseTable';
 import { FormParams, Props } from './types';
 

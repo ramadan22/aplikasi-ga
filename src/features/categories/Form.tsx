@@ -3,7 +3,7 @@ import Button from '@/ui/components/simple/button/Button';
 import ButtonWithSpinner from '@/ui/components/simple/button/ButtonWithSpinner';
 import Input from '@/ui/components/simple/form/input/InputField';
 import Switch from '@/ui/components/simple/form/Switch';
-import { Post, Update } from './hooks/UseCategories';
+import { Post, Update } from './hooks/UseCategory';
 import UseForm from './hooks/UseForm';
 import { FormProps } from './types';
 

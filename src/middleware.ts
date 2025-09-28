@@ -1,3 +1,4 @@
+import { getToken } from 'next-auth/jwt';
 import { NextRequest, NextResponse } from 'next/server';
 
 const locales = ['en', 'id'];
@@ -20,29 +21,59 @@ function getLocale(request: NextRequest): string {
   return defaultLocale;
 }
 
-export function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
+export async function middleware(req: NextRequest) {
+  const { pathname } = req.nextUrl;
+  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+  const isAuth = !!token;
+  let response = NextResponse.next();
 
   if (pathname.startsWith('/_next') || pathname.includes('.') || pathname.startsWith('/api')) {
-    return NextResponse.next();
+    return response;
   }
 
   const pathnameHasLocale = locales.some(
     locale => pathname === `/${locale}` || pathname.startsWith(`/${locale}/`),
   );
 
-  if (pathnameHasLocale) {
-    const response = NextResponse.next();
-    response.headers.set('x-pathname', pathname);
-    return response;
+  response.headers.set('x-pathname', `${pathname}`);
+
+  if (!pathnameHasLocale) {
+    const locale = getLocale(req);
+    const newUrl = req.nextUrl.clone();
+    newUrl.pathname = `/${locale}${pathname}`;
+    response.headers.set('x-pathname', `${newUrl}`);
+    response = NextResponse.redirect(newUrl);
   }
 
-  const locale = getLocale(request);
-  const newUrl = request.nextUrl.clone();
-  newUrl.pathname = `/${locale}${pathname}`;
+  const segments = pathname.split('/');
+  const currentLocale = locales.includes(segments[1]) ? segments[1] : defaultLocale;
 
-  const response = NextResponse.redirect(newUrl);
-  response.headers.set('x-pathname', pathname);
+  const isAuthPage = pathname.includes('/login');
+  const isChangePasswordPage = pathname.includes('/change-password');
+  const isUpdateProfileFirstPage = pathname.includes('/update-profile');
+
+  if (!isAuth && !isAuthPage) {
+    let from = pathname;
+    if (req.nextUrl.search) {
+      from += req.nextUrl.search;
+    }
+
+    response = NextResponse.redirect(
+      new URL(`/${currentLocale}/login?from=${encodeURIComponent(from)}`, req.url),
+    );
+  }
+
+  if (isAuthPage && isAuth) {
+    response = NextResponse.redirect(new URL(`/${currentLocale}`, req.url));
+  }
+
+  if (!isChangePasswordPage && !isUpdateProfileFirstPage && isAuth && !token?.isActive) {
+    response = NextResponse.redirect(new URL(`/${currentLocale}/change-password`, req.url));
+  }
+
+  if (isChangePasswordPage && isAuth && token?.isActive) {
+    response = NextResponse.redirect(new URL(`/${currentLocale}/update-profile`, req.url));
+  }
 
   return response;
 }

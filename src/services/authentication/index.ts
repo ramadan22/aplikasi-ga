@@ -1,51 +1,54 @@
 import AxiosInstance from '@/lib/axios';
+import { useSessionStore } from '@/lib/zustand/SessionStore';
 import { ResponseApiTypes } from '@/types/ResponseApi';
-import {
-  GetUsersParamsTypes,
-  GetUsersResponseTypes,
-  LoginResponseTypes,
-  PayloadsRegisterTypes,
-  PayloadsTypes,
-  ProfileTypes,
-} from './authenticationTypes';
-
-export const Queries = {
-  GET_USERS: 'GET_USERS',
-  GET_STUDENTS: 'GET_STUDENTS',
-};
+import { AxiosError } from 'axios';
+import { LoginResponseTypes, PayloadsTypes, ProfileTypes } from './types';
+import { PostParams } from './types/ChangePassword';
 
 export const authLogin = async (payload: PayloadsTypes) =>
   new Promise<ResponseApiTypes<LoginResponseTypes>>((resolve, reject) => {
-    AxiosInstance.post('/auth/login', payload)
+    AxiosInstance.post(`${process.env.NEXT_PUBLIC_API_URL}/api/authentication/login`, payload)
       .then(response => resolve(response.data))
       .catch(error => reject(error));
   });
 
-export const getProfile = async (accessToken?: string) =>
-  new Promise<ResponseApiTypes<ProfileTypes>>((resolve, reject) => {
-    const configHeaders = {} as { Authorization: string };
+export const refreshToken = async (refreshToken: string) =>
+  new Promise<ResponseApiTypes<LoginResponseTypes>>((resolve, reject) => {
+    AxiosInstance.post<ResponseApiTypes<LoginResponseTypes>>(
+      '/authentication/refresh-token',
+      {},
+      { headers: { Authorization: `Bearer ${refreshToken}` } },
+    )
+      .then(response => {
+        useSessionStore.getState().updateSessionToken(response.data.data?.accessToken || '');
 
-    if (accessToken) {
-      configHeaders.Authorization = `Bearer ${accessToken}`;
-    }
+        resolve(response.data);
+      })
+      .catch(error => reject(error));
+  });
 
-    AxiosInstance.get('/auth/profile', {
-      headers: configHeaders,
-    })
+export const setTokenCookie = async ({
+  accessToken,
+  refreshToken,
+}: {
+  accessToken: string;
+  refreshToken: string;
+}) =>
+  new Promise((resolve, reject) => {
+    AxiosInstance.post(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/cookie`,
+      { accessToken, refreshToken },
+      {
+        withCredentials: true,
+      },
+    )
       .then(response => resolve(response.data))
       .catch(error => reject(error));
   });
 
-export const getUsers = async (params: GetUsersParamsTypes) =>
-  new Promise<ResponseApiTypes<GetUsersResponseTypes>>((resolve, reject) => {
-    AxiosInstance.get('/auth/users', { params })
+export const changePassword = async (params: PostParams): Promise<ResponseApiTypes<ProfileTypes>> =>
+  new Promise((resolve, reject) => {
+    AxiosInstance.post<ResponseApiTypes>('/authentication/change-password', params)
       .then(response => resolve(response.data))
-      .catch(error => reject(error));
-  });
-
-export const postRegister = async (payload: PayloadsRegisterTypes) =>
-  new Promise<ResponseApiTypes<{ data: null }>>((resolve, reject) => {
-    AxiosInstance.post('/auth/register', payload)
-      .then(response => resolve(response.data))
-      .catch(error => reject(error));
+      .catch((error: AxiosError<ResponseApiTypes>) => reject(error.response?.data));
   });

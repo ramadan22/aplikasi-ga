@@ -1,10 +1,10 @@
 // types/next-auth.d.ts
-import { AuthTypes, ProfileTypes } from '@/services/authentication/authenticationTypes';
+import { ProfileTypes } from '@/services/authentication/types';
 import { DefaultSession, DefaultUser } from 'next-auth';
 import { DefaultJWT } from 'next-auth/jwt';
 
 declare module 'next-auth' {
-  interface User extends DefaultUser, Partial<AuthTypes>, Partial<ProfileTypes> {}
+  interface User extends DefaultUser, Partial<ProfileTypes> {}
 
   interface Session extends DefaultSession {
     user: User;

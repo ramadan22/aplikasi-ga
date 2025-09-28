@@ -39,14 +39,10 @@ const Form = ({ id, data, handleModal, handleSuccess }: FormProps) => {
     keyword: keywordCategory,
   });
 
-  console.log('form', form);
-
   return (
     <form
       onSubmit={e => {
         const result = validate(e);
-
-        console.log('form', form);
         if (result && !id) post(convertFormParams(form));
         if (result && id) update(convertFormParams(form));
       }}

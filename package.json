@@ -30,6 +30,7 @@
     "jspdf": "^3.0.1",
     "next": "15.3.5",
     "next-auth": "^4.24.11",
+    "next-http-proxy-middleware": "^1.2.7",
     "next-intl": "^4.3.4",
     "pdfjs-dist": "^3.11.174",
     "react": "^19.0.0",

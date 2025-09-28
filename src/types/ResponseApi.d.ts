@@ -17,8 +17,15 @@ export type ListTypes<T = any> = T extends undefined ? never : T;
 
 export type ResponseApiTypes<T = any> = {
   success: boolean;
-  status: number;
+  code: number;
   message: string;
   data?: ListTypes<T>;
   meta?: PaginationSorterTypes;
+};
+
+export type ResponseErrorApiTypes<T = any> = {
+  success: boolean;
+  code: number;
+  error: string;
+  data?: ListTypes<T>;
 };

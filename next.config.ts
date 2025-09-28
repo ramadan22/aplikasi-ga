@@ -1,9 +1,33 @@
+// next.config.js
 import ESLintPlugin from 'eslint-webpack-plugin';
 import type { NextConfig } from 'next';
 import type { Configuration } from 'webpack';
 
 const nextConfig: NextConfig = {
   devIndicators: false,
+  async rewrites() {
+    return [
+      {
+        source: '/api/auth/:path*',
+        destination: '/api/auth/:path*', // langsung ke NextAuth
+      },
+      {
+        source: '/api/:path*',
+        has: [
+          {
+            type: 'header',
+            key: 'x-nextauth-bypass',
+            value: 'true',
+          },
+        ],
+        destination: '/api/:path*', // skip proxy
+      },
+      {
+        source: '/api/proxy/:path*',
+        destination: `${process.env.NEXT_PUBLIC_API_URL}/api/:path*`,
+      },
+    ];
+  },
   webpack(
     config: Configuration,
     { dev, isServer }: { dev: boolean; isServer: boolean },

@@ -1,12 +1,12 @@
 import { HydrationBoundary, QueryClient, dehydrate } from '@tanstack/react-query';
 import { headers } from 'next/headers';
-import { redirect } from 'next/navigation';
+// import { redirect } from 'next/navigation';
 
-import { defaultParams } from '@/data/Table';
+// import { defaultParams } from '@/data/Table';
 import ApprovalFeature from '@/features/approval';
 import ComponentCard from '@/ui/components/common/ComponentCard';
 import PageBreadcrumb from '@/ui/components/common/PageBreadCrumb';
-import { buildQueryUrl } from '@/utils';
+// import { buildQueryUrl } from '@/utils';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   description: 'This is Next.js Home for TailAdmin Dashboard Template',
 };
 
-const AssetsPage = async ({
+const ApprovalPage = async ({
   searchParams,
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -24,8 +24,9 @@ const AssetsPage = async ({
   const pathname = header.get('x-pathname') || '';
 
   if (params?.page === undefined || params?.limit === undefined) {
-    const url = buildQueryUrl(pathname, { page: defaultParams.page, limit: defaultParams.size });
-    redirect(url);
+    console.log('pathname', pathname);
+    // const url = buildQueryUrl(pathname, { page: defaultParams.page, limit: defaultParams.size });
+    // redirect(url);
   }
 
   const queryClient = new QueryClient();
@@ -44,4 +45,4 @@ const AssetsPage = async ({
   );
 };
 
-export default AssetsPage;
+export default ApprovalPage;

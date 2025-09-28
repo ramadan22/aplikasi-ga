@@ -1,30 +1,46 @@
 'use client';
 
 import { EyeCloseIcon, EyeIcon } from '@/assets/icons';
-import Button from '@/ui/components/simple/button/Button';
+import ButtonWithSpinner from '@/ui/components/simple/button/ButtonWithSpinner';
 import Checkbox from '@/ui/components/simple/form/input/Checkbox';
 import Input from '@/ui/components/simple/form/input/InputField';
 import Label from '@/ui/components/simple/form/Label';
 import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
 import UseForm from './hooks/UseForm';
 import UseSubmit from './hooks/UseSubmit';
 
 const FormLoginFeature = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const from = searchParams.get('from');
+
   const {
-    username,
-    setUsername,
+    email,
+    setEmail,
     password,
     setPassword,
     showPassword,
     setShowPassword,
     isChecked,
     setIsChecked,
+    isLoading,
+    setIsLoading,
   } = UseForm();
 
   const { handleSubmit } = UseSubmit();
 
   return (
-    <form onSubmit={event => handleSubmit(event, { username, password })}>
+    <form
+      onSubmit={async event => {
+        setIsLoading(true);
+        const result = await handleSubmit(event, { email, password });
+        if (result?.status === 200) {
+          router.push(from ?? '/');
+          setIsLoading(prev => !prev);
+        }
+      }}
+    >
       <div className="space-y-6">
         <div>
           <Label>
@@ -35,8 +51,8 @@ const FormLoginFeature = () => {
           <Input
             placeholder="info@gmail.com"
             type="email"
-            defaultValue={username}
-            onChange={event => setUsername(event.target.value)}
+            defaultValue={email}
+            onChange={event => setEmail(event.target.value)}
           />
         </div>
         <div>
@@ -78,11 +94,9 @@ const FormLoginFeature = () => {
             Forgot password?
           </Link>
         </div>
-        <div>
-          <Button type="submit" className="w-full" size="sm">
-            Sign in
-          </Button>
-        </div>
+        <ButtonWithSpinner isLoading={isLoading} type="submit" className="sm:w-full">
+          Sign in
+        </ButtonWithSpinner>
       </div>
     </form>
   );

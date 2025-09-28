@@ -11,6 +11,7 @@ import SidebarProvider from '@/lib/zustand/SidebarStore';
 import GetRequestConfigHandler from '@/lib/next-intl/Request';
 import ReactQueryClientProvider from '@/lib/providers/ReactQueryProvider';
 import { ToastifyProvider } from '@/lib/providers/ReactToastify';
+import UpdateSessionProvider from '@/lib/providers/UpdateSessionProvider';
 import ViewportMeta from '../utils/ViewportMeta';
 
 export async function generateMetadata({
@@ -56,7 +57,9 @@ const RootLayout = async ({
           <ReactQueryClientProvider>
             <SidebarProvider>
               <IntlClientProvider locale={locale} messages={messages}>
-                <ToastifyProvider>{children}</ToastifyProvider>
+                <UpdateSessionProvider>
+                  <ToastifyProvider>{children}</ToastifyProvider>
+                </UpdateSessionProvider>
               </IntlClientProvider>
             </SidebarProvider>
           </ReactQueryClientProvider>

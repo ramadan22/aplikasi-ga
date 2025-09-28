@@ -1,6 +1,4 @@
-import UserAddressCard from '@/features/user-profile/UserAddressCard';
-import UserInfoCard from '@/features/user-profile/UserInfoCard';
-import UserMetaCard from '@/features/user-profile/UserMetaCard';
+import UserProfileFeature from '@/features/profile';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -17,9 +15,7 @@ const ProfilePage = () => {
           Profile
         </h3>
         <div className="space-y-6">
-          <UserMetaCard />
-          <UserInfoCard />
-          <UserAddressCard />
+          <UserProfileFeature />
         </div>
       </div>
     </div>

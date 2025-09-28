@@ -9,7 +9,7 @@ const queries = {
 
 const get = async (params: GetParams = {}): Promise<GetResponse> =>
   new Promise((resolve, reject) => {
-    AxiosInstance.get('/api/category', {
+    AxiosInstance.get('/category', {
       params,
     })
       .then(response => {
@@ -28,7 +28,7 @@ const get = async (params: GetParams = {}): Promise<GetResponse> =>
 
 const getById = async (id: string, params: GetParams = {}): Promise<GetByIdResponse> =>
   new Promise((resolve, reject) => {
-    AxiosInstance.get(`/api/category/${id}`, {
+    AxiosInstance.get(`/category/${id}`, {
       params,
     })
       .then(response => {
@@ -46,16 +46,16 @@ const getById = async (id: string, params: GetParams = {}): Promise<GetByIdRespo
   });
 
 const post = async (params: PostParams): Promise<PostResponse> =>
-  AxiosInstance.post('/api/category', params).then(response => response?.data || null);
+  AxiosInstance.post('/category', params).then(response => response?.data || null);
 
 const update = async (params: PostParams): Promise<PostResponse> => {
   const id = params.id;
-  return AxiosInstance.put(`/api/category/${id}`, removeObjectKeys(params, ['id'])).then(
+  return AxiosInstance.put(`/category/${id}`, removeObjectKeys(params, ['id'])).then(
     response => response?.data || null,
   );
 };
 
 const deleteData = async (id: string): Promise<PostResponse> =>
-  AxiosInstance.delete(`/api/category/${id}`).then(response => response?.data || null);
+  AxiosInstance.delete(`/category/${id}`).then(response => response?.data || null);
 
 export { deleteData, get, getById, post, queries, update };
