@@ -10,6 +10,7 @@ import { Modal } from '@/ui/components/simple/modal';
 import { useModal } from '@/utils/UseModal';
 import { handlePaginationChange } from '@/utils/UseTable';
 import { DataAssetsByName, Props } from '../assets/types';
+import Detail from './Detail';
 import Form from './Form';
 import { Delete, GetByName } from './hooks/UseAssets';
 import UseStable from './hooks/UseTable';
@@ -49,8 +50,8 @@ const AssetsByNameFeature = ({ params }: Props) => {
   return (
     <>
       <TableDataUI
+        isButtonDetail
         isButtonAdd={false}
-        isButtonDetail={false}
         headers={tableHeadersAssetByName}
         data={assets?.data}
         isLoading={isLoading}
@@ -70,7 +71,7 @@ const AssetsByNameFeature = ({ params }: Props) => {
         }}
         handleButtonAction={(value, id, data) => {
           if (value === 'add') openModal();
-          if (value === 'edit' || value === 'delete')
+          if (value === 'edit' || value === 'delete' || value === 'detail')
             setAction({ id, action: value, data: data as DataAssetsByName });
         }}
         meta={{
@@ -111,6 +112,13 @@ const AssetsByNameFeature = ({ params }: Props) => {
             if (!value) modalClosed();
           }}
         />
+      </Modal>
+      <Modal
+        isOpen={action.action === 'detail'}
+        onClose={() => modalClosed()}
+        className="max-w-[700px] p-6 lg:p-10"
+      >
+        <Detail onClose={() => modalClosed()} data={action.data || null} />
       </Modal>
     </>
   );

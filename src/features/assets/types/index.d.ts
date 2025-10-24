@@ -16,7 +16,7 @@ export type FormParams = {
 
 export type ActionTable = {
   id: string | number | null;
-  action: 'delete' | 'edit' | '';
+  action: 'delete' | 'edit' | 'detail' | '';
   data?: DataAssetsByName;
 };
 

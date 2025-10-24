@@ -33,7 +33,7 @@ const UseStable = () => {
       header: 'Name',
     },
     {
-      key: 'serial_number',
+      key: 'serialNumber',
       header: 'Serial Number',
     },
     {

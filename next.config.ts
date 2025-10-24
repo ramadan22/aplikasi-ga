@@ -1,15 +1,19 @@
-// next.config.js
 import ESLintPlugin from 'eslint-webpack-plugin';
 import type { NextConfig } from 'next';
+import type { RemotePattern } from 'next/dist/shared/lib/image-config';
 import type { Configuration } from 'webpack';
+
+const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+const parsedUrl = new URL(apiUrl);
 
 const nextConfig: NextConfig = {
   devIndicators: false,
+
   async rewrites() {
     return [
       {
         source: '/api/auth/:path*',
-        destination: '/api/auth/:path*', // langsung ke NextAuth
+        destination: '/api/auth/:path*',
       },
       {
         source: '/api/:path*',
@@ -20,7 +24,7 @@ const nextConfig: NextConfig = {
             value: 'true',
           },
         ],
-        destination: '/api/:path*', // skip proxy
+        destination: '/api/:path*',
       },
       {
         source: '/api/proxy/:path*',
@@ -28,19 +32,28 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+
+  images: {
+    remotePatterns: [
+      {
+        protocol: parsedUrl.protocol.replace(':', ''),
+        hostname: parsedUrl.hostname,
+        pathname: '/uploads/**',
+        ...(parsedUrl.port ? { port: parsedUrl.port } : {}),
+      },
+    ] as RemotePattern[],
+  },
+
   webpack(
     config: Configuration,
     { dev, isServer }: { dev: boolean; isServer: boolean },
   ): Configuration {
     config.devtool = false;
 
-    if (!config.module) {
-      config.module = { rules: [] };
-    } else if (!config.module.rules) {
-      config.module.rules = [];
-    }
+    config.module = config.module || { rules: [] };
+    config.module.rules = config.module.rules || [];
 
-    config.module!.rules!.push({
+    config.module.rules.push({
       test: /\.svg$/,
       issuer: /\.[jt]sx?$/,
       use: ['@svgr/webpack'],
@@ -55,6 +68,7 @@ const nextConfig: NextConfig = {
         }),
       );
     }
+
     return config;
   },
 };

@@ -1,6 +1,7 @@
 'use client';
 
 import { EyeCloseIcon, EyeIcon } from '@/assets/icons';
+import { messageError } from '@/lib/react-toastify';
 import ButtonWithSpinner from '@/ui/components/simple/button/ButtonWithSpinner';
 import Checkbox from '@/ui/components/simple/form/input/Checkbox';
 import Input from '@/ui/components/simple/form/input/InputField';
@@ -37,8 +38,10 @@ const FormLoginFeature = () => {
         const result = await handleSubmit(event, { email, password });
         if (result?.status === 200) {
           router.push(from ?? '/');
-          setIsLoading(prev => !prev);
+          return;
         }
+        setIsLoading(prev => !prev);
+        messageError('Email and password are incorrect!');
       }}
     >
       <div className="space-y-6">

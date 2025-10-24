@@ -18,7 +18,7 @@ const queries = {
 
 const get = async (params: GetParams = {}): Promise<GetResponse> =>
   new Promise((resolve, reject) => {
-    AxiosInstance.get('/asset', {
+    AxiosInstance.get('/assets', {
       params,
     })
       .then(response => resolve(response.data))
@@ -27,7 +27,7 @@ const get = async (params: GetParams = {}): Promise<GetResponse> =>
 
 const getByName = async (params: GetParams = {}): Promise<GetResponseAssetsByName> =>
   new Promise((resolve, reject) => {
-    AxiosInstance.get(`/asset/name/${params.name}`, {
+    AxiosInstance.get(`/assets/${params.name}`, {
       params: removeObjectKeys(params, ['name']),
     })
       .then(response => {
@@ -46,7 +46,7 @@ const getByName = async (params: GetParams = {}): Promise<GetResponseAssetsByNam
 
 const getById = async (id: string, params: GetParams = {}): Promise<GetByIdResponse> =>
   new Promise((resolve, reject) => {
-    AxiosInstance.get(`/asset/${id}`, {
+    AxiosInstance.get(`/assets/${id}`, {
       params,
     })
       .then(response => {
@@ -64,16 +64,16 @@ const getById = async (id: string, params: GetParams = {}): Promise<GetByIdRespo
   });
 
 const post = async (params: PostParams): Promise<PostResponse> =>
-  AxiosInstance.post('/asset', params).then(response => response?.data || null);
+  AxiosInstance.post('/assets', params).then(response => response?.data || null);
 
 const update = async (params: PostParams): Promise<PostResponse> => {
   const id = params.id;
-  return AxiosInstance.put(`/asset/${id}`, removeObjectKeys(params, ['id'])).then(
+  return AxiosInstance.put(`/assets/${id}`, removeObjectKeys(params, ['id'])).then(
     response => response?.data || null,
   );
 };
 
 const deleteData = async (id: string): Promise<PostResponse> =>
-  AxiosInstance.delete(`/asset/${id}`).then(response => response?.data || null);
+  AxiosInstance.delete(`/assets/${id}`).then(response => response?.data || null);
 
 export { deleteData, get, getById, getByName, post, queries, update };

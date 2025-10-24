@@ -10,6 +10,7 @@ interface ModalProps {
   children: React.ReactNode;
   showCloseButton?: boolean;
   size?: 'sm' | 'md' | 'lg';
+  center?: boolean;
 }
 
 export const Modal: React.FC<ModalProps> = ({
@@ -19,6 +20,7 @@ export const Modal: React.FC<ModalProps> = ({
   className = '',
   showCloseButton = true,
   size,
+  center,
 }) => {
   const modalRef = useRef<HTMLDivElement>(null);
 
@@ -65,7 +67,12 @@ export const Modal: React.FC<ModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 overflow-y-auto z-[99] sm:py-5 py-0">
+    <div
+      className={cn(
+        'fixed inset-0 overflow-y-auto z-[99] sm:py-5 py-0',
+        center && 'flex items-center',
+      )}
+    >
       {/* Backdrop */}
       <div
         className="fixed inset-0 sm:bg-gray-400/50 sm:backdrop-blur-[32px] bg-white dark:bg-gray-900"

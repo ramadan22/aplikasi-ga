@@ -1,7 +1,10 @@
+import UploadFileFeature from '@/features/upload-file';
 import { messageSuccess } from '@/lib/react-toastify';
 import Button from '@/ui/components/simple/button/Button';
 import ButtonWithSpinner from '@/ui/components/simple/button/ButtonWithSpinner';
 import Input from '@/ui/components/simple/form/input/InputField';
+import Radio from '@/ui/components/simple/form/input/Radio';
+import Label from '@/ui/components/simple/form/Label';
 import SearchSelect from '@/ui/components/simple/form/SearchSelect';
 import { Post, Update } from './hooks/UseAssets';
 import { Get as CategoryGet } from './hooks/UseCategories';
@@ -12,6 +15,8 @@ const Form = ({ id, data, handleModal, handleSuccess }: FormProps) => {
   const {
     form,
     handleChange,
+    handleChangeImage,
+    handleChangeRadio,
     handleSelect,
     handleBlur,
     validate,
@@ -41,6 +46,7 @@ const Form = ({ id, data, handleModal, handleSuccess }: FormProps) => {
 
   return (
     <form
+      noValidate
       onSubmit={e => {
         const result = validate(e);
         if (result && !id) post(convertFormParams(form));
@@ -58,28 +64,99 @@ const Form = ({ id, data, handleModal, handleSuccess }: FormProps) => {
       </div>
       <div className="mt-8">
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+          <Label
+            required
+            className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400"
+          >
             Name
-          </label>
+          </Label>
           <Input
             id="name"
+            required
             value={form.name}
             onChange={handleChange}
             onBlur={handleBlur}
             error={!!errors.name}
             hint={errors.name}
+            placeholder="Enter asset name here"
           />
         </div>
         <div className="mt-6">
-          <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+          <Label
+            required
+            className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400"
+          >
+            Serial Number
+          </Label>
+          <Input
+            id="serialNumber"
+            required
+            value={form.serialNumber}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            error={!!errors.serialNumber}
+            hint={errors.serialNumber}
+            placeholder="Enter serial number here"
+          />
+        </div>
+        <div className="mt-6">
+          <Label
+            required
+            className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400"
+          >
+            Maintenance
+          </Label>
+          <div className="flex flex-wrap items-center gap-8 mt-4">
+            <Radio
+              id="radio1"
+              name="isMaintenance"
+              value="1"
+              checked={form.isMaintenance}
+              onChange={value => handleChangeRadio(value)}
+              label="Yes"
+            />
+            <Radio
+              id="radio2"
+              name="isMaintenance"
+              value="0"
+              checked={!form.isMaintenance}
+              onChange={value => handleChangeRadio(value)}
+              label="No"
+            />
+          </div>
+        </div>
+        <div className="mt-6">
+          <Label
+            required
+            className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-400"
+          >
+            Image
+          </Label>
+          <UploadFileFeature
+            id="image"
+            usage="assets"
+            type="image"
+            value={form.image}
+            handleChange={data => handleChangeImage(data?.url || '')}
+            error={!!errors.image}
+            hint={errors.image}
+          />
+        </div>
+        <div className="mt-6">
+          <Label
+            required
+            className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400"
+          >
             Category
-          </label>
+          </Label>
           <SearchSelect
             data={getCategories}
             selected={form?.category || null}
             onSelect={handleSelect}
             onSearchNotFound={value => setKeywordCategory(value)}
             loading={loadingGetCategories}
+            error={!!errors.categoryId}
+            hint={errors.categoryId}
           />
         </div>
       </div>

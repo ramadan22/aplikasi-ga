@@ -21,7 +21,7 @@ export const authOptions: NextAuthOptions = {
             password: credentials?.password || '',
           });
 
-          if (resultAuth.code !== 200) {
+          if (resultAuth.status !== 200) {
             throw new Error(resultAuth.message || 'Something wrong!');
           }
 

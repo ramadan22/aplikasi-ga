@@ -15,6 +15,8 @@ type BaseProps = {
   onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
   placeholder?: string;
   size?: 'sm' | 'md' | 'lg';
+  error?: boolean;
+  hint?: string;
 };
 
 type SingleSelectProps = BaseProps & {
@@ -46,6 +48,8 @@ const SearchSelect: React.FC<SearchSelectProps> = ({
   onBlur,
   placeholder = 'Please Select',
   size,
+  error,
+  hint,
 }) => {
   const [open, setOpen] = useState(false);
   const [keyword, setKeyword] = useState('');
@@ -321,6 +325,10 @@ const SearchSelect: React.FC<SearchSelectProps> = ({
           )}
         </div>
       </div>
+
+      {hint && (
+        <p className={`mt-1.5 text-xs ${error ? 'text-error-500' : 'text-gray-500'}`}>{hint}</p>
+      )}
     </div>
   );
 };

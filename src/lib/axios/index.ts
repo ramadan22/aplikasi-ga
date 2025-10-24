@@ -100,7 +100,7 @@ const onResponseError = async (error: AxiosError<ResponseApiTypes>) => {
     }
   }
 
-  if (error.response?.data.code === 440) {
+  if (error.response?.data.status === 440) {
     signOut({ callbackUrl: '/' });
     return;
   }

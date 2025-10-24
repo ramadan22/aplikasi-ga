@@ -8,44 +8,53 @@ export type Field = {
   id?: string;
   name: string;
   categoryId: string;
-};
-
-export type Data = {
-  id: string;
-  name: string;
-  quantity: number;
-  category: {
-    id: string;
-    name: string;
-  } | null;
+  image: string;
+  isMaintenance: boolean;
+  serialNumber: string;
 };
 
 export interface Category {
   id: string;
   name: string;
   prefix: string;
-  is_deleted: boolean;
-  is_device: boolean;
-  createdAt: string;
+  isDevice: boolean;
 }
+
+export type Data = {
+  id: string;
+  name: string;
+  code: string;
+  isMaintenance: boolean;
+  serialNumber: string;
+  image: string | null;
+  createdAt: string;
+  updatedAt: string;
+  category: Category;
+  quantity: number;
+};
 
 export type DataAssetsByName = {
   id: string;
   name: string;
   code: string;
   isMaintenance: boolean;
-  categoryId: string;
-  is_deleted: boolean;
-  serial_number: string | null;
+  serialNumber: string;
+  image: string | null;
   createdAt: string;
-  category: Category;
+  updatedAt: string | null;
+  category: {
+    id: string;
+    name: string;
+    prefix: string;
+    isDevice: boolean;
+  };
 };
 
 export type GetParams = { name?: string } & PaginationParams;
 export type GetResponse = ResponseApiTypes<Data[]>;
 export type GetResponseAssetsByName = ResponseApiTypes<DataAssetsByName[]>;
 export type GetByIdResponse = ResponseApiTypes<Data>;
-export type PostParams = { id?: string } & Field;
+export type PostParams = Field;
 export type PostResponse = ResponseApiTypes<Data>;
 
 export type PostInput = PostParams;

@@ -23,7 +23,7 @@ const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({
   description = 'Are you sure you want to delete this item? This action cannot be undone.',
 }) => {
   return (
-    <Modal isOpen={isOpen} onClose={onClose} className="max-w-lg p-6 sm:p-8">
+    <Modal center isOpen={isOpen} onClose={onClose} className="max-w-lg p-6 sm:p-8">
       <div className="text-center">
         <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-error-100 dark:bg-error-500/10">
           <FaRegTrashAlt />
