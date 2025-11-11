@@ -1,13 +1,16 @@
 'use client';
 
-import { signOut } from 'next-auth/react';
-import Image from 'next/image';
+import { cn } from '@/lib/classnames';
+import { signOut, useSession } from 'next-auth/react';
 import React, { useState } from 'react';
+import DefaultImage from '../common/DefaultImage';
 import Button from '../simple/button/Button';
 import { Dropdown } from '../simple/dropdown/Dropdown';
 import { DropdownItem } from '../simple/dropdown/DropdownItem';
 
 const UserDropdown = () => {
+  const { data: loginData } = useSession();
+
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleDropdown = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -25,11 +28,27 @@ const UserDropdown = () => {
         onClick={toggleDropdown}
         className="flex items-center text-gray-700 dark:text-gray-400 dropdown-toggle"
       >
-        <span className="mr-3 overflow-hidden rounded-full h-11 w-11">
-          <Image width={44} height={44} src="/images/user/owner.jpg" alt="User" />
+        <span
+          className={cn(
+            'relative mr-3 overflow-hidden rounded-full h-11 w-11 flex items-center justify-center border text-gray-500 transition-colors bg-white border-gray-200 hover:text-dark-900 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white',
+            loginData?.user.image === undefined && 'animate-pulse bg-gray-200 dark:bg-gray-200/2',
+          )}
+        >
+          <DefaultImage
+            fill
+            className="object-cover bg-[length:100%_100%] bg-no-repeat"
+            src={loginData?.user.image}
+            alt="User"
+          />
         </span>
 
-        <span className="block mr-1 font-medium text-theme-sm">Musharof</span>
+        <span className="block mr-1 font-medium text-theme-sm">
+          {!loginData?.user.firstName && (
+            <span className="block animate-pulse bg-gray-200 dark:bg-gray-200/2 w-24 h-6 rounded" />
+          )}
+          {loginData?.user.firstName &&
+            (loginData?.user.firstName || '') + '' + (loginData?.user.lastName || '')}
+        </span>
 
         <svg
           className={`stroke-gray-500 dark:stroke-gray-400 transition-transform duration-200 ${

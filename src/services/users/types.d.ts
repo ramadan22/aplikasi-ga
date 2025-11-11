@@ -1,16 +1,18 @@
+import { Role } from '@/constants/Role';
+import { PaginationParams, ResponseApiTypes } from '@/types/ResponseApi';
+
 export type Data = {
   id: string;
-  email: string;
   firstName: string;
-  lastName: string | null;
+  lastName: string;
+  email: string;
   image: string | null;
-  role: string;
-  socialMedia: string | null;
-  accessToken: string;
-  refreshToken: string;
+  socialMedia: [];
+  role: Role;
   isActive: boolean;
-  isManager: boolean;
-  manager: string;
+  updatedAt: string | null;
   createdAt: string;
-  updatedAt: string;
 };
+
+export type GetParams = { exceptUserId?: string } & PaginationParams;
+export type GetResponse = ResponseApiTypes<Data[]>;

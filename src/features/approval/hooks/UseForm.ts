@@ -1,11 +1,13 @@
 'use client';
 
-import { DummyEmail, SubmissionTypes } from '@/data/Approval';
+import { RequestStatusLabel, SubmissionTypeLabel } from '@/constants/Approval';
+import { SubmissionTypes } from '@/data/Approval';
 import { useState } from 'react';
 import { array, minLength, object, pipe, safeParse, string } from 'valibot';
-import { FormParams, Option } from '../types';
+import { DataApproval } from '../types';
+import { FormParams, Option } from '../types/Form';
 
-const UseForm = (data: FormParams | undefined) => {
+const UseForm = (data: DataApproval | undefined) => {
   const assetRequestSchema = object({
     sn: pipe(string(), minLength(1, 'Serial number is required')),
     name: pipe(string(), minLength(1, 'Name is required')),
@@ -14,7 +16,7 @@ const UseForm = (data: FormParams | undefined) => {
 
   const schema = object({
     submissionType: pipe(string(), minLength(1, 'Submission type is required')),
-    approved_by: pipe(
+    approvedBy: pipe(
       array(object({ label: string(), value: string() })),
       minLength(1, 'Approved by is required'),
     ),
@@ -30,21 +32,27 @@ const UseForm = (data: FormParams | undefined) => {
 
   const defaultAssetRequest = {
     idx: getRandomTwoDigit(),
-    sn: '',
     name: '',
-    category_id: '',
+    quantity: 1,
+    category: null,
   };
 
   const [form, setForm] = useState<FormParams>({
-    submissionType: '',
-    approved_by: [],
-    note: '',
-    asset_request: [defaultAssetRequest],
-    ...data,
+    id: data?.id,
+    submissionType: data?.submissionType
+      ? { label: SubmissionTypeLabel[data?.submissionType], value: data?.submissionType }
+      : null,
+    status: data?.status ? { label: RequestStatusLabel[data?.status], value: data?.status } : null,
+    notes: '',
+    approvedBy: [],
+    requestedFor: null,
+    assetRequest: [defaultAssetRequest],
   });
 
   const [errors, setErrors] = useState<Record<string, string | undefined>>({});
   const [keywordCategory, setKeywordCategory] = useState('');
+  const [approversKey, setApproversKey] = useState('');
+  const [userKey, setUserKey] = useState('');
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>,
@@ -57,8 +65,31 @@ const UseForm = (data: FormParams | undefined) => {
     }));
   };
 
-  const handleSelect = (key: string, value: string | Option[]) => {
+  const handleSelect = (key: string, value: string | Option[] | Option) => {
     setForm(prev => ({ ...prev, [key]: value }));
+  };
+
+  const handleChangeCategory = (idx: string, key: 'name' | 'quantity', value: string) => {
+    const assetRequest = form.assetRequest;
+    const findIndex = assetRequest.findIndex(row => row.idx === idx);
+
+    if (findIndex > -1) {
+      if (key === 'name') assetRequest[findIndex].name = value;
+      if (key === 'quantity') assetRequest[findIndex].quantity = Number(value);
+    }
+
+    setForm(prev => ({ ...prev, assetRequest }));
+  };
+
+  const handleSelectCategory = (idx: string, value: Option) => {
+    const assetRequest = form.assetRequest;
+    const findIndex = assetRequest.findIndex(row => row.idx === idx);
+
+    if (findIndex > -1) {
+      assetRequest[findIndex].category = value;
+    }
+
+    setForm(prev => ({ ...prev, assetRequest }));
   };
 
   const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
@@ -85,8 +116,6 @@ const UseForm = (data: FormParams | undefined) => {
         newErrors[pathKey] = issue.message;
       }
 
-      console.log('newErrors', newErrors);
-
       setErrors(newErrors);
       return false;
     }
@@ -95,7 +124,7 @@ const UseForm = (data: FormParams | undefined) => {
   };
 
   const addItemAssetRequest = () => {
-    const items = [...form.asset_request];
+    const items = [...form.assetRequest];
     let idx: string;
 
     do {
@@ -103,12 +132,48 @@ const UseForm = (data: FormParams | undefined) => {
     } while (items.some(item => item.idx === idx));
 
     items.push({ ...defaultAssetRequest, idx });
-    setForm({ ...form, asset_request: items });
+    setForm({ ...form, assetRequest: items });
   };
 
   const removeItemAssetRequest = (idx: string) => {
-    const items = form.asset_request.filter(item => item.idx !== idx);
-    setForm({ ...form, asset_request: items });
+    const items = form.assetRequest.filter(item => item.idx !== idx);
+    setForm({ ...form, assetRequest: items });
+  };
+
+  const convertFormParams = (approval: FormParams) => {
+    const assetsPayload = approval.assetRequest.flatMap(row => {
+      const qty = Number(row.quantity) || 1;
+
+      if (
+        qty === 1 &&
+        (!row.name || row.name.trim() === '') &&
+        (!row.category?.value || row.category?.value.trim() === '')
+      ) {
+        return [];
+      }
+
+      return Array.from({ length: qty }).map(() => ({
+        name: row.name,
+        isMaintenance: false,
+        categoryId: row.category?.value ?? '',
+      }));
+    });
+
+    const signaturesPayload = approval.approvedBy.map(row => ({
+      userId: row.value,
+    }));
+
+    const payload = {
+      id: approval.id,
+      requestedForId: approval.requestedFor?.value || null,
+      submissionType: approval.submissionType?.value,
+      status: approval.status?.value || 'DRAFT',
+      notes: approval.notes,
+      assets: assetsPayload,
+      signatures: signaturesPayload,
+    };
+
+    return payload;
   };
 
   return {
@@ -116,12 +181,18 @@ const UseForm = (data: FormParams | undefined) => {
     errors,
     handleChange,
     handleSelect,
+    handleSelectCategory,
+    handleChangeCategory,
     handleBlur,
     validate,
     keywordCategory,
     setKeywordCategory,
+    approversKey,
+    setApproversKey,
+    userKey,
+    setUserKey,
     SubmissionTypes,
-    DummyEmail,
+    convertFormParams,
     addItemAssetRequest,
     removeItemAssetRequest,
   };

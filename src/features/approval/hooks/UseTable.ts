@@ -1,6 +1,12 @@
-import { DummyApprovals } from '@/data/Approval';
-import { ActionTable } from '@/features/approval/types';
-import StatusBadge from '@/ui/components/common/StatusBadge';
+import {
+  RequestStatus,
+  RequestStatusLabel,
+  SubmissionType,
+  SubmissionTypeLabel,
+} from '@/constants/Approval';
+import { Role, RoleLabel } from '@/constants/Role';
+import { ActionTable } from '@/features/approval/types/Table';
+import StatusApprovalBadge from '@/ui/components/common/StatusApprovalBadge';
 import { useState } from 'react';
 
 const UseStable = () => {
@@ -12,31 +18,23 @@ const UseStable = () => {
     {
       key: 'submissionType',
       header: 'Submission',
+      render: (submission: SubmissionType) => SubmissionTypeLabel[submission],
     },
     {
       key: 'status',
       header: 'Status',
-      render: (value: string) => StatusBadge({ status: value }),
+      render: (status: RequestStatus) =>
+        StatusApprovalBadge({ status, label: RequestStatusLabel[status] }),
     },
-    // {
-    //   key: 'note',
-    //   header: 'Note',
-    // },
-    // {
-    //   key: 'approved_by',
-    //   header: 'Approved By',
-    // },
-    // {
-    //   key: 'asset_request',
-    //   header: 'Asset Request',
-    // },
     {
-      key: 'created_by',
+      key: 'createdBy',
       header: 'Created By',
+      render: (row: { firstName: string; role: Role }) =>
+        `${row.firstName} (${RoleLabel[row.role]})`,
     },
     {
       key: 'createdAt',
-      header: 'CreatedAt',
+      header: 'Created At',
     },
   ];
 
@@ -50,7 +48,6 @@ const UseStable = () => {
     tableHeaders,
     action,
     setAction,
-    DummyApprovals,
   };
 };
 

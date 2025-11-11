@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-one-expression-per-line */
 'use client';
 
 import { useSignatureStore } from '@/lib/zustand/UseSignatureStore';
@@ -9,10 +8,10 @@ import Draggable from 'react-draggable';
 import SignatureCanvas from 'react-signature-canvas';
 
 const signatures = [
-  { id: 1, name: 'Haris Ramadan' },
-  { id: 2, name: 'Budi Santoso' },
-  { id: 3, name: 'Siti Aminah' },
-  { id: 4, name: 'Yani' },
+  { id: 1, name: 'Haris Ramadan', x: 100, y: 100 },
+  { id: 2, name: 'Budi Santoso', x: 100, y: 180 },
+  // { id: 3, name: 'Siti Aminah', x: 100, y: 260 },
+  // { id: 4, name: 'Yani', x: 100, y: 340 },
 ];
 
 // Tipe bantu untuk peta ref div
@@ -97,6 +96,37 @@ const ApprovalDocument: React.FC = () => {
     });
   };
 
+  const getDefaultSignaturePosition = (index: number, total: number) => {
+    const baseY = 100; // ✅ posisi lebih tinggi supaya tidak keluar A4
+    const sigWidth = 200;
+    const gap = 40;
+
+    if (total <= 3) {
+      const totalWidth = total * sigWidth + (total - 1) * gap;
+      const pageWidth = 794; // A4 px landscape-ish using current scaling
+      const startX = (pageWidth - totalWidth) / 2;
+
+      return {
+        x: startX + index * (sigWidth + gap),
+        y: baseY,
+      };
+    }
+
+    // jika lebih dari 3, auto 2 row
+    const perRow = 3;
+    const row = Math.floor(index / perRow);
+    const col = index % perRow;
+
+    const totalWidth = perRow * sigWidth + (perRow - 1) * gap;
+    const pageWidth = 794;
+    const startX = (pageWidth - totalWidth) / 2;
+
+    return {
+      x: startX + col * (sigWidth + gap),
+      y: baseY + row * 120,
+    };
+  };
+
   return (
     <div className="p-4">
       <div className="flex gap-2 mb-4">
@@ -120,19 +150,19 @@ const ApprovalDocument: React.FC = () => {
         }}
       >
         {/* Kop Perusahaan */}
-        <div style={{ textAlign: 'center', fontWeight: 'bold' }}>{'{kop Perusahaan}'}</div>
+        <div style={{ textAlign: 'center', fontWeight: 'bold' }}>PT. _____________</div>
 
         {/* No & Tanggal */}
         <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>
-          <div>No: __________________</div>
-          <div>{'{tempat}, {tanggal}'}</div>
+          <div>No: ________/PROC/____/2025</div>
+          <div>Jakarta, 25 Oktober 2025</div>
         </div>
 
         {/* Tujuan Surat */}
         <div style={{ marginTop: '20px' }}>
           Kepada Yth:
           <br />
-          Direktur Jenderal Sumber Daya & Perangkat Pos dan Informatika.
+          Direktur Jenderal Sumber Daya & Perangkat Pos dan Informatika
           <br />
           Kementerian Komunikasi dan Informatika
           <br />
@@ -143,16 +173,17 @@ const ApprovalDocument: React.FC = () => {
 
         {/* Perihal */}
         <div style={{ marginTop: '20px', fontWeight: 'bold' }}>
-          Perihal : Permohonan Hak Labuh <i>(Landing Right)</i> Satelit Asing
+          Perihal : Pengajuan Pengadaan Barang (Procurement)
         </div>
 
         {/* Isi Surat */}
         <div style={{ marginTop: '20px', textAlign: 'justify' }}>
-          Bersama ini dengan hormat kami sampaikan bahwa PT. ________________________ yang telah
-          memiliki izin penyelenggaraan/ izin prinsip *){' '}
-          <i>(sebutkan nama izin penyelenggaraannya)</i> berdasarkan Keputusan ______________ Nomor:
-          ______________ perihal ________, bermaksud untuk mengajukan permohonan Hak Labuh{' '}
-          <i>(Landing Right)</i> untuk satelit asing sebagai berikut :
+          Dengan hormat,
+          <br />
+          <br />
+          Sehubungan dengan kebutuhan perusahaan untuk mendukung kegiatan operasional tim
+          Engineering, bersama ini kami mengajukan permohonan pengadaan perangkat laptop sebagai
+          berikut:
         </div>
 
         {/* Tabel */}
@@ -167,45 +198,55 @@ const ApprovalDocument: React.FC = () => {
           <thead>
             <tr>
               <th style={{ border: '1px solid black', padding: '5px' }}>NO</th>
-              <th style={{ border: '1px solid black', padding: '5px' }}>NAMA SATELIT</th>
-              <th style={{ border: '1px solid black', padding: '5px' }}>SLOT ORBIT</th>
-              <th style={{ border: '1px solid black', padding: '5px' }}>ADMINISTRASI</th>
+              <th style={{ border: '1px solid black', padding: '5px' }}>NAMA BARANG</th>
+              <th style={{ border: '1px solid black', padding: '5px' }}>KATEGORI</th>
+              <th style={{ border: '1px solid black', padding: '5px' }}>JUMLAH</th>
             </tr>
           </thead>
           <tbody>
-            {[1, 2, 3].map(n => (
-              <tr key={n}>
-                <td style={{ border: '1px solid black', padding: '5px', textAlign: 'center' }}>
-                  {n}
-                </td>
-                <td style={{ border: '1px solid black', padding: '5px' }}></td>
-                <td style={{ border: '1px solid black', padding: '5px' }}></td>
-                <td style={{ border: '1px solid black', padding: '5px' }}></td>
-              </tr>
-            ))}
+            <tr>
+              <td style={{ border: '1px solid black', padding: '5px', textAlign: 'center' }}>1</td>
+              <td style={{ border: '1px solid black', padding: '5px' }}>MacBook M1</td>
+              <td style={{ border: '1px solid black', padding: '5px' }}>Laptop</td>
+              <td style={{ border: '1px solid black', padding: '5px', textAlign: 'center' }}>
+                2 Unit
+              </td>
+            </tr>
+            <tr>
+              <td style={{ border: '1px solid black', padding: '5px', textAlign: 'center' }}>2</td>
+              <td style={{ border: '1px solid black', padding: '5px' }}>MacBook M4</td>
+              <td style={{ border: '1px solid black', padding: '5px' }}>Laptop</td>
+              <td style={{ border: '1px solid black', padding: '5px', textAlign: 'center' }}>
+                1 Unit
+              </td>
+            </tr>
           </tbody>
         </table>
 
         {/* Lanjutan */}
         <div style={{ marginTop: '20px', textAlign: 'justify' }}>
-          Adapun satelit asing tersebut di atas akan digunakan untuk keperluan ………………………
+          Barang tersebut akan digunakan sebagai perangkat kerja pada tim Engineering guna menunjang
+          efisiensi proses pengembangan sistem.
           <br />
           <br />
-          Sebagai bahan pertimbangan, bersama ini kami lampirkan persyaratan yang diperlukan.
-          <br />
-          <br />
-          Demikian kami sampaikan, atas perhatian dan persetujuan Bapak Dirjen diucapkan terima
-          kasih.
+          Demikian kami sampaikan, atas perhatian dan persetujuannya kami ucapkan terima kasih.
         </div>
 
         {/* 3 Signature draggable */}
         {signatures.map(sig => (
           <Draggable
+            disabled
             key={sig.id}
             nodeRef={dragRefs[sig.id]}
             handle=".drag-handle"
-            position={position[sig.id] ?? { x: 0, y: 0 }}
-            onStop={(_, data) => setPosition(sig.id, { x: data.x, y: data.y })}
+            position={
+              position[sig.id] ??
+              getDefaultSignaturePosition(
+                signatures.findIndex(s => s.id === sig.id),
+                signatures.length,
+              )
+            }
+            onStop={(_, data) => setPosition(`${sig.id}`, { x: Number(data.x), y: data.y })}
           >
             <div
               ref={dragRefs[sig.id]}
@@ -225,19 +266,15 @@ const ApprovalDocument: React.FC = () => {
                 style={{
                   paddingTop: '6px',
                   paddingBottom: '10px',
-                  // paddingLeft: '20px',
-                  // paddingRight: '20px',
-                  cursor: 'grab',
                   fontSize: '12px',
                   textAlign: 'center',
-                  // borderBottom: '1px solid #ccc',
                   position: 'relative',
                   userSelect: 'none',
                 }}
               >
                 <div className="absolute left-1 drag-icon">⠿</div>
                 {sig.name}
-                <div className="border-b solid border-[#ccc]" style={{ marginTop: '10px' }} />
+                <div className="" style={{ marginTop: '10px' }} />
               </div>
 
               {/* Signature pad */}
@@ -247,10 +284,12 @@ const ApprovalDocument: React.FC = () => {
                 backgroundColor="white"
                 canvasProps={{
                   width: 200,
-                  height: 80,
+                  height: 100,
                   className: 'border-gray-300',
                 }}
               />
+
+              <div className="border-b solid border-[#ccc]" />
             </div>
           </Draggable>
         ))}

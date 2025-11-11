@@ -114,11 +114,12 @@ const AssetsByNameFeature = ({ params }: Props) => {
         />
       </Modal>
       <Modal
+        size="md"
         isOpen={action.action === 'detail'}
         onClose={() => modalClosed()}
         className="max-w-[700px] p-6 lg:p-10"
       >
-        <Detail onClose={() => modalClosed()} data={action.data || null} />
+        <Detail data={action.data || null} />
       </Modal>
     </>
   );

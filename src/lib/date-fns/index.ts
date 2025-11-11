@@ -32,3 +32,13 @@ export const formatDateToWIB = (
     return '-';
   }
 };
+
+export const formatDateForDocument = (isoString: string): string => {
+  const formattedDate = formatDateToWIB(isoString, {
+    withTime: false,
+    lang: 'id',
+    formatPattern: 'dd MMMM yyyy',
+  });
+
+  return `Jakarta, ${formattedDate}`;
+};

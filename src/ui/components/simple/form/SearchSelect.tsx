@@ -21,14 +21,14 @@ type BaseProps = {
 
 type SingleSelectProps = BaseProps & {
   isMultiple?: false;
-  selected: SelectOption | null;
-  onSelect: (item: SelectOption) => void;
+  selected?: SelectOption | null;
+  onSelect?: (item: SelectOption) => void;
 };
 
 type MultiSelectProps = BaseProps & {
   isMultiple: true;
-  selected: SelectOption[];
-  onSelect: (items: SelectOption[]) => void;
+  selected?: SelectOption[];
+  onSelect?: (items: SelectOption[]) => void;
 };
 
 type SearchSelectProps = SingleSelectProps | MultiSelectProps;

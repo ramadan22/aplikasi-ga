@@ -1,17 +1,18 @@
 import { HydrationBoundary, QueryClient, dehydrate } from '@tanstack/react-query';
 import { headers } from 'next/headers';
-// import { redirect } from 'next/navigation';
+import { redirect } from 'next/navigation';
 
-// import { defaultParams } from '@/data/Table';
+import { defaultParams } from '@/data/Table';
 import ApprovalFeature from '@/features/approval';
+import { get, queries } from '@/services/approval';
 import ComponentCard from '@/ui/components/common/ComponentCard';
 import PageBreadcrumb from '@/ui/components/common/PageBreadCrumb';
-// import { buildQueryUrl } from '@/utils';
+import { buildQueryUrl } from '@/utils';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Next.js E-commerce Dashboard | TailAdmin - Next.js Dashboard Template',
-  description: 'This is Next.js Home for TailAdmin Dashboard Template',
+  title: 'Dashboard | Management Approval',
+  description: 'This is Management Approval for Dashboard',
 };
 
 const ApprovalPage = async ({
@@ -24,20 +25,27 @@ const ApprovalPage = async ({
   const pathname = header.get('x-pathname') || '';
 
   if (params?.page === undefined || params?.limit === undefined) {
-    console.log('pathname', pathname);
-    // const url = buildQueryUrl(pathname, { page: defaultParams.page, limit: defaultParams.size });
-    // redirect(url);
+    const url = buildQueryUrl(pathname, { page: defaultParams.page, limit: defaultParams.size });
+    redirect(url);
   }
 
   const queryClient = new QueryClient();
 
+  await queryClient.prefetchQuery({
+    queryKey: [queries.GET_APPROVALS, params],
+    queryFn: () => get(params),
+  });
+
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <div>
-        <PageBreadcrumb pageTitle="Approval Data" />
+        <PageBreadcrumb
+          pageTitle="Approvals Data"
+          breadCrumbs={[{ text: 'Approvals Data', url: '' }]}
+        />
         <div className="space-y-6">
           <ComponentCard>
-            <ApprovalFeature />
+            <ApprovalFeature params={params} />
           </ComponentCard>
         </div>
       </div>

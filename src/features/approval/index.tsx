@@ -2,34 +2,40 @@
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
+import { RequestStatus } from '@/constants/Approval';
 import { defaultParams } from '@/data/Table';
-// import { messageSuccess } from '@/lib/react-toastify';
-// import DeleteConfirmModal from '@/ui/components/common/ModalConfirm';
+import { messageError, messageSuccess } from '@/lib/react-toastify';
+import DeleteConfirmModal from '@/ui/components/common/ModalConfirm';
 import TableDataUI from '@/ui/components/common/TableData';
 import { Modal } from '@/ui/components/simple/modal';
-// import { requestNotificationPermission, showNotification } from '@/utils/Notification';
 import { useModal } from '@/utils/UseModal';
 import { handlePaginationChange } from '@/utils/UseTable';
+import Detail from './Detail';
 import Form from './Form';
-// import { Delete, Get } from './hooks/UseAssets';
+import { Get, UpdateStatus } from './hooks/UseApproval';
 import UseStable from './hooks/UseTable';
+import { DataApproval, Props } from './types';
 
-const ApprovalFeature = () => {
+const ApprovalFeature = ({ params }: Props) => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const { tableHeaders, action, setAction, DummyApprovals } = UseStable();
+  const { tableHeaders, action, setAction } = UseStable();
   const { isOpen, openModal, closeModal } = useModal();
 
-  // const { data: assets, isLoading, refetch } = Get(params);
-  // const { mutate: deleteData, isPending: pendingDeleteData } = Delete({
-  //   onSuccess: res => {
-  //     messageSuccess(res.message);
-  //     modalClosed();
-  //     refetch();
-  //   },
-  // });
+  const { data: approvals, isLoading, refetch } = Get({ ...params });
+
+  const { mutate: handleReject, isPending: isPendingReject } = UpdateStatus({
+    onSuccess: () => {
+      messageSuccess('Success reject approval');
+      modalClosed();
+    },
+    onError: err => {
+      const message = (err as { message: string }).message;
+      messageError(message);
+    },
+  });
 
   const modalClosed = () => {
     closeModal();
@@ -39,9 +45,12 @@ const ApprovalFeature = () => {
   return (
     <>
       <TableDataUI
+        isButtonDetail
+        isButtonEdit={false}
+        isButtonDelete={false}
         headers={tableHeaders}
-        data={DummyApprovals}
-        // isLoading={isLoading}
+        data={approvals?.data}
+        isLoading={isLoading}
         handleChangeParams={(key, value) => {
           handlePaginationChange({
             key,
@@ -51,28 +60,18 @@ const ApprovalFeature = () => {
             router,
           });
         }}
-        // handleButtonAction={(value, id, data) => {
-        handleButtonAction={value => {
+        handleButtonAction={(value, id, data) => {
           if (value === 'add') openModal();
-          // if (value === 'edit' || value === 'delete')
-          //   setAction({ id, action: value, data: data as FormParams });
+          if (value === 'edit' || value === 'detail')
+            setAction({ id, action: value, data: data as DataApproval });
         }}
         meta={{
           // sorter: assets?.meta?.sorter || '',
           size: Number(searchParams.get('limit')) || defaultParams.size,
           page: Number(searchParams.get('page')) || defaultParams.page,
-          // total: assets?.meta?.total || 0,
-          total: 0,
+          total: approvals?.meta?.total || 0,
         }}
       />
-      {/* <DeleteConfirmModal
-        isOpen={action.action === 'delete'}
-        onClose={() => modalClosed()}
-        onConfirm={() => deleteData(action.id as string)}
-        isLoading={pendingDeleteData}
-        title="Are you sure?"
-        description="This data will be permanently removed from the system."
-      /> */}
       <Modal
         isOpen={isOpen || action.action === 'edit'}
         onClose={() => modalClosed()}
@@ -82,9 +81,10 @@ const ApprovalFeature = () => {
         <Form
           id={action.id as string}
           data={action.data}
+          process={action.process}
           handleSuccess={value => {
             if (value) {
-              // refetch();
+              refetch();
               modalClosed();
             }
           }}
@@ -94,6 +94,40 @@ const ApprovalFeature = () => {
           }}
         />
       </Modal>
+      <Modal
+        isOpen={action.action === 'detail'}
+        onClose={() => modalClosed()}
+        className="max-w-[700px] p-6 lg:p-10"
+        size="lg"
+      >
+        <Detail
+          data={action.data || null}
+          handleReject={id => setAction({ id, action: 'delete' })}
+          handleProcess={data => {
+            const condition =
+              data.submissionType === 'PROCUREMENT' &&
+              data.assets.length < 1 &&
+              data.signatures.length < 1;
+
+            if (condition) {
+              setAction({
+                id: data.id,
+                action: 'edit',
+                process: data.status as RequestStatus,
+                data: data as DataApproval,
+              });
+            }
+          }}
+        />
+      </Modal>
+      <DeleteConfirmModal
+        isOpen={action.action === 'delete'}
+        onClose={() => modalClosed()}
+        onConfirm={() => handleReject({ id: `${action.id}`, status: RequestStatus.REJECT })}
+        isLoading={isPendingReject}
+        title="Reject this approval?"
+        description="This action will mark the request as rejected and may require a new resubmission. This cannot be undone."
+      />
     </>
   );
 };

@@ -1,35 +1,26 @@
+import { Data, IApprovalDetail } from '@/services/approval/types';
 import { PaginationParams } from '@/types/ResponseApi';
 
 export type Props = {
   params: PaginationParams;
 };
 
-export type Option = {
-  label: string;
-  value: string;
-};
-
-export type FormParams = {
-  submissionType: string;
-  approved_by: Option[];
-  note: string;
-  asset_request: {
-    idx: string;
-    sn: string;
+/**
+ * ✅ Grouped Assets (Frontend only)
+ * — Dibuat dari hasil pengelompokan array assets backend
+ */
+export type GroupedAsset = {
+  name: string;
+  count: number;
+  isMaintenance: boolean;
+  categoryId: string;
+  category: {
+    id: string;
     name: string;
-    category_id: string;
-  }[];
+    prefix: string;
+  } | null;
 };
 
-export type ActionTable = {
-  id: string | number | null;
-  action: 'delete' | 'edit' | '';
-  data?: FormParams;
-};
+export type DataApproval = Data;
 
-export type FormProps = {
-  id: string;
-  data: FormParams | undefined;
-  handleSuccess: (value: boolean) => void;
-  handleModal: (value: boolean) => void;
-};
+export type ApprovalDetail = IApprovalDetail;
