@@ -25,7 +25,7 @@ const Detail = ({ handleProcess, handleReject, data }: PropsDetail) => {
 
   return (
     <>
-      <div>
+      <div className="px-1">
         <h5 className="mb-2 font-semibold text-gray-800 dark:text-white/90 text-xl lg:text-2xl">
           Approval Detail
         </h5>
@@ -36,7 +36,7 @@ const Detail = ({ handleProcess, handleReject, data }: PropsDetail) => {
 
       <div className="mt-8 space-y-4">
         {/* Basic Info */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6 px-1">
           <DetailItem
             label="Submission Type"
             value={SubmissionTypeLabel[data.submissionType as SubmissionType]}
@@ -120,6 +120,7 @@ const Detail = ({ handleProcess, handleReject, data }: PropsDetail) => {
               <p className="text-base font-semibold text-gray-800 dark:text-white">Signers</p>
               {data.status !== RequestStatus.REJECT && (
                 <Button
+                  disabled={isLoading}
                   onClick={() => {
                     window.open(`/approval-document?id=${data.id}`, '_blank');
                   }}

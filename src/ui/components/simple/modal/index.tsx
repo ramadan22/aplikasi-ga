@@ -83,7 +83,7 @@ export const Modal: React.FC<ModalProps> = ({
       <div
         ref={modalRef}
         className={cn(
-          'relative w-full h-full p-4 border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] sm:rounded-3xl sm:max-w-lg sm:h-auto sm:p-6 mx-auto',
+          'relative w-full p-4 border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] sm:rounded-3xl sm:max-w-lg md:h-auto sm:p-6 mx-auto',
           getSizeClass(size),
           className,
         )}
