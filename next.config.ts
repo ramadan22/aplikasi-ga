@@ -9,6 +9,16 @@ const parsedUrl = new URL(apiUrl);
 const nextConfig: NextConfig = {
   devIndicators: false,
 
+  typescript: {
+    ignoreBuildErrors: false,
+    tsconfigPath: './tsconfig.json',
+  },
+
+  // ESLint tetap berjalan, tapi tidak memblokir build production
+  eslint: {
+    ignoreDuringBuilds: false,
+  },
+
   async rewrites() {
     return [
       {
@@ -41,6 +51,12 @@ const nextConfig: NextConfig = {
         pathname: '/uploads/**',
         ...(parsedUrl.port ? { port: parsedUrl.port } : {}),
       },
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '3001',
+        pathname: '/uploads/**',
+      },
     ] as RemotePattern[],
   },
 
@@ -59,15 +75,22 @@ const nextConfig: NextConfig = {
       use: ['@svgr/webpack'],
     });
 
+    // FIX AGAR ESLINT TIDAK MELEDAK SAAT SSR
     if (dev && !isServer) {
       config.plugins = config.plugins ?? [];
       config.plugins.push(
         new ESLintPlugin({
           extensions: ['js', 'jsx', 'ts', 'tsx'],
-          emitError: false,
+          emitError: true,
+          failOnError: false,
         }),
       );
     }
+
+    // FIX tambahan untuk mencegah error HookWebpackError
+    config.infrastructureLogging = {
+      level: 'error',
+    };
 
     return config;
   },

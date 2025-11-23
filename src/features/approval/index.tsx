@@ -1,7 +1,5 @@
 'use client';
 
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-
 import { RequestStatus } from '@/constants/Approval';
 import { defaultParams } from '@/data/Table';
 import { messageError, messageSuccess } from '@/lib/react-toastify';
@@ -9,7 +7,8 @@ import DeleteConfirmModal from '@/ui/components/common/ModalConfirm';
 import TableDataUI from '@/ui/components/common/TableData';
 import { Modal } from '@/ui/components/simple/modal';
 import { useModal } from '@/utils/UseModal';
-import { handlePaginationChange } from '@/utils/UseTable';
+import UsePagination from '@/utils/UsePagination';
+import { useSearchParams } from 'next/navigation';
 import Detail from './Detail';
 import Form from './Form';
 import { Get, UpdateStatus } from './hooks/UseApproval';
@@ -17,14 +16,12 @@ import UseStable from './hooks/UseTable';
 import { DataApproval, Props } from './types';
 
 const ApprovalFeature = ({ params }: Props) => {
-  const router = useRouter();
-  const pathname = usePathname();
   const searchParams = useSearchParams();
+  const { handlePaginationChange } = UsePagination();
+  const { tableHeaders, setAction, action } = UseStable();
+  const { openModal, closeModal } = useModal();
 
-  const { tableHeaders, action, setAction } = UseStable();
-  const { isOpen, openModal, closeModal } = useModal();
-
-  const { data: approvals, isLoading, refetch } = Get({ ...params });
+  const { data: approvals, isLoading, refetch } = Get(params);
 
   const { mutate: handleReject, isPending: isPendingReject } = UpdateStatus({
     onSuccess: () => {
@@ -39,31 +36,24 @@ const ApprovalFeature = ({ params }: Props) => {
 
   const modalClosed = () => {
     closeModal();
-    setAction({ id: '', action: '' });
+    setAction({ id: '', type: '' });
   };
 
   return (
     <>
-      <TableDataUI
+      <TableDataUI<DataApproval>
         isButtonDetail
         isButtonEdit={false}
         isButtonDelete={false}
         headers={tableHeaders}
         data={approvals?.data}
         isLoading={isLoading}
-        handleChangeParams={(key, value) => {
-          handlePaginationChange({
-            key,
-            value,
-            searchParams,
-            pathname,
-            router,
-          });
-        }}
-        handleButtonAction={(value, id, data) => {
-          if (value === 'add') openModal();
-          if (value === 'edit' || value === 'detail')
-            setAction({ id, action: value, data: data as DataApproval });
+        handleChangeParams={(key, value) => handlePaginationChange({ key, value })}
+        handleButtonAction={(value, id = '', data) => {
+          if (value === 'add') setAction({ type: 'add' });
+          if (value === 'edit' || value === 'detail') {
+            setAction({ id, type: value, data });
+          }
         }}
         meta={{
           // sorter: assets?.meta?.sorter || '',
@@ -73,7 +63,7 @@ const ApprovalFeature = ({ params }: Props) => {
         }}
       />
       <Modal
-        isOpen={isOpen || action.action === 'edit'}
+        isOpen={action.type === 'add' || action.type === 'edit'}
         onClose={() => modalClosed()}
         className="max-w-[700px] p-6 lg:p-10"
         size="md"
@@ -82,11 +72,10 @@ const ApprovalFeature = ({ params }: Props) => {
           id={action.id as string}
           data={action.data}
           process={action.process}
-          handleSuccess={value => {
-            if (value) {
-              refetch();
-              modalClosed();
-            }
+          handleSuccess={success => {
+            if (!success) return;
+            refetch();
+            modalClosed();
           }}
           handleModal={value => {
             if (value) openModal();
@@ -95,35 +84,30 @@ const ApprovalFeature = ({ params }: Props) => {
         />
       </Modal>
       <Modal
-        isOpen={action.action === 'detail'}
+        isOpen={action.type === 'detail'}
         onClose={() => modalClosed()}
         className="max-w-[700px] p-6 lg:p-10"
         size="lg"
       >
         <Detail
-          data={action.data || null}
-          handleReject={id => setAction({ id, action: 'delete' })}
-          handleProcess={data => {
-            const condition =
-              data.submissionType === 'PROCUREMENT' &&
-              data.assets.length < 1 &&
-              data.signatures.length < 1;
+          data={action.data}
+          handleReject={id => setAction({ id, type: 'delete' })}
+          handleProcess={(data, isEdit) => {
+            if (!isEdit) return;
 
-            if (condition) {
-              setAction({
-                id: data.id,
-                action: 'edit',
-                process: data.status as RequestStatus,
-                data: data as DataApproval,
-              });
-            }
+            setAction({
+              id: data.id,
+              type: 'edit',
+              process: data.status,
+              data: data,
+            });
           }}
         />
       </Modal>
       <DeleteConfirmModal
-        isOpen={action.action === 'delete'}
+        isOpen={action.type === 'delete'}
         onClose={() => modalClosed()}
-        onConfirm={() => handleReject({ id: `${action.id}`, status: RequestStatus.REJECT })}
+        onConfirm={() => handleReject({ id: action?.id || '', status: RequestStatus.REJECT })}
         isLoading={isPendingReject}
         title="Reject this approval?"
         description="This action will mark the request as rejected and may require a new resubmission. This cannot be undone."

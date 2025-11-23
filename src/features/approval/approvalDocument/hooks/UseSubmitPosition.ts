@@ -1,10 +1,5 @@
 import { updatePositionSignature } from '@/services/approval';
-import {
-  PostError,
-  UpdateInputSignature,
-  UpdateOutputSignature,
-  UpdateSignaturePositionOptions,
-} from '@/services/approval/types';
+import { PutMutationOptionsSignature } from '@/services/approval/types/Request';
 import { useMutation } from '@tanstack/react-query';
 
 export const handleConvertParams = (data: Record<string, { x: number; y: number }>) => {
@@ -17,8 +12,8 @@ export const handleConvertParams = (data: Record<string, { x: number; y: number 
   return { signatures };
 };
 
-export const SubmitUpdatePosition = (options?: UpdateSignaturePositionOptions) =>
-  useMutation<UpdateOutputSignature, PostError, UpdateInputSignature>({
+export const SubmitUpdatePosition = (options?: PutMutationOptionsSignature) =>
+  useMutation({
     mutationFn: updatePositionSignature,
     ...options,
   });

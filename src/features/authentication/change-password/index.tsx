@@ -14,11 +14,11 @@ const FormChangePasswordFeature = () => {
 
   const { mutate: submitChangePassword, isPending } = Post({
     onSuccess: response => {
-      updateValueSession(response.data);
+      updateValueSession(response?.data || null);
       window.location.replace('/update-profile');
     },
-    onError: response => {
-      messageError(response.error);
+    onError: err => {
+      messageError(err.message);
     },
   });
 

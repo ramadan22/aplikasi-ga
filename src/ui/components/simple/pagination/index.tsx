@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-one-expression-per-line */
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -63,7 +62,10 @@ const Pagination = ({
           </div>
         </div>
         <div className="flex items-center justify-center text-sm font-medium dark:text-gray-400 text-black/50">
-          Page {page} of {!Number.isNaN(totalPageCount) ? totalPageCount : 0}
+          Page&nbsp;
+          {page}
+          &nbsp;of &nbsp;
+          {!Number.isNaN(totalPageCount) ? totalPageCount : 0}
         </div>
         <div className="flex items-center space-x-2">
           <Button

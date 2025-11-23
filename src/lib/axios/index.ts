@@ -12,11 +12,8 @@ let failedQueue: {
 
 const processQueue = (error: unknown, token: string | null = null) => {
   failedQueue.forEach(prom => {
-    if (error) {
-      prom.reject(error);
-    } else {
-      prom.resolve(token || '');
-    }
+    if (error) prom.reject(error);
+    else prom.resolve(token || '');
   });
   failedQueue = [];
 };
@@ -29,24 +26,31 @@ const AxiosInstance = axios.create({
   },
 });
 
+const getCookieUrl = () =>
+  typeof window === 'undefined'
+    ? `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/cookie`
+    : '/api/auth/cookie';
+
 const onRequest = async (
   config: InternalAxiosRequestConfig,
 ): Promise<InternalAxiosRequestConfig> => {
   if (!config.headers.Authorization) {
     try {
-      const cookieUrl =
-        typeof window === 'undefined'
-          ? `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/cookie`
-          : '/api/auth/cookie';
+      const cookieUrl = getCookieUrl();
 
-      const getCookie = await fetch(cookieUrl, { credentials: 'include' });
+      const getCookie = await fetch(cookieUrl, {
+        credentials: 'include',
+      });
+
+      if (!getCookie.ok) return config;
+
       const cookie = await getCookie.json();
 
       if (cookie?.accessToken) {
         config.headers.Authorization = `Bearer ${cookie.accessToken}`;
       }
     } catch (err) {
-      console.error('Failed to fetch token', err);
+      console.error('Failed to fetch token:', err);
     }
   }
 
@@ -58,7 +62,9 @@ const onRequestError = (error: AxiosError): Promise<AxiosError> => Promise.rejec
 const onResponse = (response: AxiosResponse): AxiosResponse => response;
 
 const onResponseError = async (error: AxiosError<ResponseApiTypes>) => {
-  const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
+  const originalRequest = error.config as InternalAxiosRequestConfig & {
+    _retry?: boolean;
+  };
 
   if (error.response?.status === 401 && !originalRequest._retry) {
     if (isRefreshing) {
@@ -79,15 +85,20 @@ const onResponseError = async (error: AxiosError<ResponseApiTypes>) => {
     isRefreshing = true;
 
     try {
-      const getCookie = await fetch('/api/auth/cookie', { credentials: 'include' });
-      const cookie = await getCookie.json();
+      const cookieUrl = getCookieUrl();
+      const getCookie = await fetch(cookieUrl, { credentials: 'include' });
 
-      const res = await refreshToken(cookie?.refreshToken || '');
+      if (!getCookie.ok) throw new Error('Failed to fetch cookie');
+
+      const cookie = await getCookie.json();
+      const refresh = cookie?.refreshToken || '';
+
+      const res = await refreshToken(refresh);
       const newAccessToken = res.data?.accessToken;
 
       if (!newAccessToken) throw new Error('No access token returned');
 
-      originalRequest.headers['Authorization'] = 'Bearer ' + newAccessToken;
+      originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
 
       processQueue(null, newAccessToken);
 
@@ -100,7 +111,7 @@ const onResponseError = async (error: AxiosError<ResponseApiTypes>) => {
     }
   }
 
-  if (error.response?.data.status === 440) {
+  if (error.response?.data?.status === 440) {
     signOut({ callbackUrl: '/' });
     return;
   }

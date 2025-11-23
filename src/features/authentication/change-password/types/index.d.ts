@@ -1,9 +1,10 @@
-import { ProfileTypes } from '@/services/authentication/types';
-import {
-  PostError,
-  PostInput,
-  PostMutationOptions,
-  PostOutput,
-} from '@/services/authentication/types/ChangePassword';
+// import { ProfileTypes } from '@/services/authentication/types';
 
-export { PostError, PostInput, PostMutationOptions, PostOutput, ProfileTypes };
+// import {
+//   PostError,
+//   PostInput,
+//   PostMutationOptions,
+//   PostOutput,
+// } from '@/services/authentication/types/ChangePassword';
+
+// export { PostError, PostInput, PostMutationOptions, PostOutput, ProfileTypes };

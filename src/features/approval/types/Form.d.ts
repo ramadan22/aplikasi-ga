@@ -5,15 +5,15 @@ export type DefaultEnumType<T> = {
   label: string;
 };
 
-export type Option = {
+export type OptionForm = {
   label: string;
   value: string;
 };
 
-export type FormParams = {
+export interface ParamsForm {
   id?: string;
   submissionType: DefaultEnumType<SubmissionType> | null;
-  status: DefaultEnumType<RequestStatus> | null;
+  status: RequestStatus | null;
   notes: string;
   requestedFor: DefaultEnumType<string> | null;
   assetRequest: {
@@ -24,9 +24,9 @@ export type FormParams = {
     category: CommonTextAndValue | null;
   }[];
   approvedBy: Option[];
-};
+}
 
-export type FormProps = {
+export type PropsForm = {
   id: string;
   data: Data | undefined;
   process?: RequestStatus | '';

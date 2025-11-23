@@ -1,4 +1,5 @@
 'use client';
+
 import { ChevronDownIcon, EyeCloseIcon, EyeIcon, TimeIcon } from '@/assets/icons';
 import DatePicker from '@/lib/flat-pickr/date-picker';
 import ComponentCard from '@/ui/components/common/ComponentCard';
@@ -14,8 +15,8 @@ const DefaultInputs = () => {
     { value: 'template', label: 'Template' },
     { value: 'development', label: 'Development' },
   ];
-  const handleSelectChange = (value: string) => {
-    console.log('Selected value:', value);
+  const handleSelectChange = (_: string) => {
+    // console.log('Selected value:', value);
   };
   return (
     <ComponentCard title="Default Inputs">
@@ -64,9 +65,9 @@ const DefaultInputs = () => {
             id="date-picker"
             label="Date Picker Input"
             placeholder="Select a date"
-            onChange={(dates, currentDateString) => {
+            onChange={(_, __) => {
               // Handle your logic
-              console.log({ dates, currentDateString });
+              // console.log({ dates, currentDateString });
             }}
           />
         </div>
@@ -74,7 +75,12 @@ const DefaultInputs = () => {
         <div>
           <Label htmlFor="tm">Time Picker Input</Label>
           <div className="relative">
-            <Input type="time" id="tm" name="tm" onChange={e => console.log(e.target.value)} />
+            <Input
+              type="time"
+              id="tm"
+              name="tm"
+              // onChange={e => console.log(e.target.value)}
+            />
             <span className="absolute text-gray-500 -translate-y-1/2 pointer-events-none right-3 top-1/2 dark:text-gray-400">
               <TimeIcon />
             </span>

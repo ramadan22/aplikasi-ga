@@ -1,9 +1,9 @@
 'use client';
+import { IPostLogin } from '@/services/authentication/types/Request';
 import { handleLogin } from '../services/Login';
-import { LoginParams } from '../types/UseSubmit';
 
 const UseSubmit = () => {
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>, params: LoginParams) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>, params: IPostLogin) => {
     event.preventDefault();
 
     const result = await handleLogin({

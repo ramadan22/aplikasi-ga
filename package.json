@@ -6,7 +6,7 @@
   "scripts": {
     "build": "next build",
     "start": "next start",
-    "lint": "eslint --ext .js,.jsx,.ts,.tsx src",
+    "lint": "eslint --ext .js,.jsx,.ts,.tsx src && tsc --noEmit",
     "lint:watch": "nodemon --watch src --ext ts,tsx,js,jsx --exec \"npm run lint\"",
     "dev": "concurrently -n \"NEXT,ESLINT\" -c \"bgBlue.bold,bgMagenta.bold\" \"next dev\" \"npm run lint:watch\""
   },
@@ -63,6 +63,7 @@
     "eslint": "^9",
     "eslint-config-next": "15.3.5",
     "eslint-config-prettier": "^10.1.5",
+    "eslint-plugin-eslint-comments": "^3.2.0",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-prettier": "^5.5.1",

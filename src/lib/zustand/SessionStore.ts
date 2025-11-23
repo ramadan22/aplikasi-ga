@@ -1,13 +1,12 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
+import { IProfile } from '@/services/authentication/types';
 import { create } from 'zustand';
 
 type SessionState = {
   loading: boolean;
-  valueSession: any;
+  valueSession: IProfile | null;
   valueSessionToken: string;
   setLoading: (val: boolean) => void;
-  updateValueSession: (val: any) => void;
+  updateValueSession: (val: IProfile | null) => void;
   updateSessionToken: (val: string) => void;
 };
 

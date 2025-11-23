@@ -1,15 +1,16 @@
 'use client';
 
-import { useParams, usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 
 import { defaultParams } from '@/data/Table';
 import { messageSuccess } from '@/lib/react-toastify';
+import { IAssetByName } from '@/services/asset/types';
 import DeleteConfirmModal from '@/ui/components/common/ModalConfirm';
 import TableDataUI from '@/ui/components/common/TableData';
 import { Modal } from '@/ui/components/simple/modal';
 import { useModal } from '@/utils/UseModal';
-import { handlePaginationChange } from '@/utils/UseTable';
-import { DataAssetsByName, Props } from '../assets/types';
+import UsePagination from '@/utils/UsePagination';
+import { Props } from '../assets/types';
 import Detail from './Detail';
 import Form from './Form';
 import { Delete, GetByName } from './hooks/UseAssets';
@@ -17,12 +18,12 @@ import UseStable from './hooks/UseTable';
 
 const AssetsByNameFeature = ({ params }: Props) => {
   const router = useRouter();
-  const pathname = usePathname();
   const getParams = useParams();
   const searchParams = useSearchParams();
+  const { handlePaginationChange } = UsePagination();
 
   const { tableHeadersAssetByName, action, setAction, keyword, setKeyword } = UseStable();
-  const { isOpen, openModal, closeModal } = useModal();
+  const { openModal, closeModal } = useModal();
 
   const {
     data: assets,
@@ -44,12 +45,12 @@ const AssetsByNameFeature = ({ params }: Props) => {
 
   const modalClosed = () => {
     closeModal();
-    setAction({ id: '', action: '' });
+    setAction({ id: '', type: '' });
   };
 
   return (
     <>
-      <TableDataUI
+      <TableDataUI<IAssetByName>
         isButtonDetail
         isButtonAdd={false}
         headers={tableHeadersAssetByName}
@@ -61,18 +62,12 @@ const AssetsByNameFeature = ({ params }: Props) => {
             return;
           }
 
-          handlePaginationChange({
-            key,
-            value,
-            searchParams,
-            pathname,
-            router,
-          });
+          handlePaginationChange({ key, value });
         }}
         handleButtonAction={(value, id, data) => {
           if (value === 'add') openModal();
           if (value === 'edit' || value === 'delete' || value === 'detail')
-            setAction({ id, action: value, data: data as DataAssetsByName });
+            setAction({ id, type: value, data });
         }}
         meta={{
           // sorter: assets?.meta?.sorter || '',
@@ -82,7 +77,7 @@ const AssetsByNameFeature = ({ params }: Props) => {
         }}
       />
       <DeleteConfirmModal
-        isOpen={action.action === 'delete'}
+        isOpen={action.type === 'delete'}
         onClose={() => modalClosed()}
         onConfirm={() => deleteData(action.id as string)}
         isLoading={pendingDeleteData}
@@ -90,7 +85,7 @@ const AssetsByNameFeature = ({ params }: Props) => {
         description="This data will be permanently removed from the system."
       />
       <Modal
-        isOpen={isOpen || action.action === 'edit'}
+        isOpen={action.type === 'add' || action.type === 'edit'}
         onClose={() => modalClosed()}
         className="max-w-[700px] p-6 lg:p-10"
       >
@@ -115,7 +110,7 @@ const AssetsByNameFeature = ({ params }: Props) => {
       </Modal>
       <Modal
         size="md"
-        isOpen={action.action === 'detail'}
+        isOpen={action.type === 'detail'}
         onClose={() => modalClosed()}
         className="max-w-[700px] p-6 lg:p-10"
       >

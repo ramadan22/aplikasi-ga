@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { format } from 'date-fns';
 import Image from 'next/image';
+import { ReactNode } from 'react';
 import { DataAssetsByName } from './types';
 
 interface DetailProps {
@@ -90,7 +89,7 @@ const SectionCard = ({ title, children }: { title?: string; children: React.Reac
 );
 
 /* ✅ Improved typography & spacing */
-const DetailItem = ({ label, value }: { label: string; value: any }) => (
+const DetailItem = ({ label, value }: { label: string; value: string | number | ReactNode }) => (
   <div className="space-y-[2px]">
     <p className="text-[13px] text-gray-500 dark:text-gray-400">{label}</p>
     <div className="text-[15px] font-semibold text-gray-900 dark:text-gray-100 break-words">

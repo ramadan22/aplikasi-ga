@@ -1,14 +1,16 @@
 import AxiosInstance from '@/lib/axios';
 import { ResponseApiTypes } from '@/types/ResponseApi';
 import { removeObjectKeys } from '@/utils';
-import { Data, GetParams } from './types';
+import { User } from 'next-auth';
+import { IUser } from './types';
+import { GetParams } from './types/Request';
 
 const queries = {
   GET_USERS: 'GET_USERS',
   GET_PROFILE: 'GET_PROFILE',
 };
 
-const get = async (params: GetParams = {}): Promise<ResponseApiTypes<Data[]>> =>
+const get = async (params: GetParams = {}): Promise<ResponseApiTypes<IUser[]>> =>
   new Promise((resolve, reject) => {
     const updateParams = removeObjectKeys(params, ['exceptUserId']);
 
@@ -16,7 +18,7 @@ const get = async (params: GetParams = {}): Promise<ResponseApiTypes<Data[]>> =>
       params: updateParams,
     })
       .then(response => {
-        const map = (response.data.data as Data[])
+        const map = (response.data.data as IUser[])
           .filter(row => row.id !== params.exceptUserId)
           .map(res => ({
             ...res,
@@ -31,7 +33,7 @@ const get = async (params: GetParams = {}): Promise<ResponseApiTypes<Data[]>> =>
   });
 
 const getProfile = async (token?: string) =>
-  new Promise<ResponseApiTypes<Data>>((resolve, reject) => {
+  new Promise<ResponseApiTypes<User>>((resolve, reject) => {
     const configHeaders = {} as { Authorization: string };
     const url = token ? `${process.env.NEXT_PUBLIC_API_URL}/api/users/profile` : '/users/profile';
 

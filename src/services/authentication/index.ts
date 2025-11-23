@@ -1,20 +1,17 @@
 import AxiosInstance from '@/lib/axios';
 import { useSessionStore } from '@/lib/zustand/SessionStore';
-import { ResponseApiTypes } from '@/types/ResponseApi';
-import { AxiosError } from 'axios';
-import { LoginResponseTypes, PayloadsTypes, ProfileTypes } from './types';
-import { PostParams } from './types/ChangePassword';
+import { IPostChangePassword, IPostLogin, PostResponseLogin } from './types/Request';
 
-export const authLogin = async (payload: PayloadsTypes) =>
-  new Promise<ResponseApiTypes<LoginResponseTypes>>((resolve, reject) => {
+export const authLogin = async (payload: IPostLogin) =>
+  new Promise<PostResponseLogin>((resolve, reject) => {
     AxiosInstance.post(`${process.env.NEXT_PUBLIC_API_URL}/api/authentication/login`, payload)
       .then(response => resolve(response.data))
       .catch(error => reject(error));
   });
 
 export const refreshToken = async (refreshToken: string) =>
-  new Promise<ResponseApiTypes<LoginResponseTypes>>((resolve, reject) => {
-    AxiosInstance.post<ResponseApiTypes<LoginResponseTypes>>(
+  new Promise<PostResponseLogin>((resolve, reject) => {
+    AxiosInstance.post<PostResponseLogin>(
       '/authentication/refresh-token',
       {},
       { headers: { Authorization: `Bearer ${refreshToken}` } },
@@ -46,9 +43,7 @@ export const setTokenCookie = async ({
       .catch(error => reject(error));
   });
 
-export const changePassword = async (params: PostParams): Promise<ResponseApiTypes<ProfileTypes>> =>
-  new Promise((resolve, reject) => {
-    AxiosInstance.post<ResponseApiTypes>('/authentication/change-password', params)
-      .then(response => resolve(response.data))
-      .catch((error: AxiosError<ResponseApiTypes>) => reject(error.response?.data));
-  });
+export const changePassword = async (params: IPostChangePassword) =>
+  AxiosInstance.post('/authentication/change-password', params).then(
+    response => response?.data || null,
+  );

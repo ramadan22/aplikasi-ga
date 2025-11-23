@@ -4,13 +4,12 @@ import { DefaultSession, DefaultUser } from 'next-auth';
 import { DefaultJWT } from 'next-auth/jwt';
 
 declare module 'next-auth' {
-  interface User extends DefaultUser, Partial<ProfileTypes> {}
-
+  type User = DefaultUser & Partial<ProfileTypes> & { accessToken: string; refreshToken: string };
   interface Session extends DefaultSession {
-    user: User;
+    user: Partial<User>;
   }
 }
 
 declare module 'next-auth/jwt' {
-  interface JWT extends DefaultJWT, Partial<AuthTypes>, Partial<ProfileTypes> {}
+  interface JWT extends DefaultJWT, ProfileTypes {}
 }

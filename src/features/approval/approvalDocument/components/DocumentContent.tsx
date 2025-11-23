@@ -1,8 +1,9 @@
 import { formatDateForDocument } from '@/lib/date-fns';
-import { ApprovalDetail, GroupedAsset } from '../../types';
+import { DataApproval } from '../../types';
+import { GroupedAsset } from '../../types/Detail';
 
 interface Props {
-  data: ApprovalDetail | undefined;
+  data: DataApproval | undefined;
 }
 
 export const DocumentContent = ({ data }: Props) => {
@@ -15,7 +16,6 @@ export const DocumentContent = ({ data }: Props) => {
           name: item?.name || '',
           count: 0,
           isMaintenance: item.isMaintenance || false,
-          categoryId: item?.category?.id || '',
           category: item.category || null,
         };
       }

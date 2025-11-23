@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 const UpdateProfilePage = async () => {
   const session = await getServerSession(authOptions);
 
-  if (!session?.user.isActive) {
+  if (!session?.user?.isActive) {
     redirect('/change-password');
   }
 

@@ -5,7 +5,8 @@ import {
   SubmissionTypeLabel,
 } from '@/constants/Approval';
 import { Role, RoleLabel } from '@/constants/Role';
-import { ActionTable } from '@/features/approval/types/Table';
+import { TableAction } from '@/features/approval/types/Table';
+import { IApproval } from '@/services/approval/types';
 import StatusApprovalBadge from '@/ui/components/common/StatusApprovalBadge';
 import { useState } from 'react';
 
@@ -38,9 +39,9 @@ const UseStable = () => {
     },
   ];
 
-  const [action, setAction] = useState<ActionTable>({
+  const [action, setAction] = useState<TableAction<IApproval>>({
     id: '',
-    action: '',
+    type: '',
     data: undefined,
   });
 

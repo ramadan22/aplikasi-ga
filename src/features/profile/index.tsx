@@ -6,9 +6,7 @@ import UserInfoCard from './UserInfoCard';
 import UserMetaCard from './UserMetaCard';
 
 const UserProfileFeature = () => {
-  const { data: profile } = Get();
-
-  console.log(profile);
+  const { data: _ } = Get();
 
   return (
     <>

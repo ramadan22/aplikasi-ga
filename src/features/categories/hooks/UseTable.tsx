@@ -1,6 +1,7 @@
+import { ICategory } from '@/services/category/types';
 import BooleanBadge from '@/ui/components/common/BooleanBadge';
 import { useState } from 'react';
-import { ActionTable } from '../types';
+import { TableAction } from '../types/Table';
 
 const UseStable = () => {
   const tableHeaders = [
@@ -17,7 +18,7 @@ const UseStable = () => {
       header: 'Prefix',
     },
     {
-      key: 'is_device',
+      key: 'isDevice',
       header: 'Device',
       render: (value: boolean) => {
         return <BooleanBadge value={value} labels={['Device', 'Non-Device']} />;
@@ -30,9 +31,9 @@ const UseStable = () => {
   ];
 
   const [keyword, setKeyword] = useState('');
-  const [action, setAction] = useState<ActionTable>({
+  const [action, setAction] = useState<TableAction<ICategory>>({
     id: '',
-    action: '',
+    type: '',
     data: undefined,
   });
 

@@ -1,5 +1,5 @@
 import { RequestStatus } from '@/constants/Approval';
-import { RoleLabel } from '@/constants/Role';
+import { Role, RoleLabel } from '@/constants/Role';
 import {
   get as getApi,
   getApprovers,
@@ -10,36 +10,35 @@ import {
   updateStatus,
 } from '@/services/approval';
 import {
-  GetParams,
-  PostError,
-  PostInput,
-  PostMutationOptions,
-  PostOutput,
-  UpdateMutationOptions,
-} from '@/services/approval/types';
+  ApprovalPostMutationOptions,
+  ApprovalPutMutationOptions,
+  GetParamsApproval,
+  GetParamsApprovers,
+} from '@/services/approval/types/Request';
 import { get as getUsers, queries as queriesUsers } from '@/services/users';
-import { GetParams as UserGetParams } from '@/services/users/types';
+import { GetParams as UserGetParams } from '@/services/users/types/Request';
 import { useMutation, UseMutationOptions, useQuery } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
 
-export const Get = (params: GetParams = {}) =>
+export const Get = (params: GetParamsApproval) =>
   useQuery({
     queryKey: [queriesApproval.GET_APPROVALS, params],
     queryFn: () => getApi(params),
   });
 
-export const Post = (options?: PostMutationOptions) =>
-  useMutation<PostOutput, PostError, PostInput>({
+export const Post = (options?: ApprovalPostMutationOptions) =>
+  useMutation({
     mutationFn: post,
     ...options,
   });
 
-export const Update = (options?: UpdateMutationOptions) =>
-  useMutation<PostOutput, PostError, PostInput>({
+export const Update = (options?: ApprovalPutMutationOptions) =>
+  useMutation({
     mutationFn: update,
     ...options,
   });
 
-export const GetApprovers = (params: GetParams = {}) =>
+export const GetApprovers = (params: GetParamsApprovers) =>
   useQuery({
     queryKey: [queriesApproval.GET_APPROVERS, params],
     queryFn: () => getApprovers(params),
@@ -52,7 +51,7 @@ export const GetUsers = (params: UserGetParams = {}) =>
       const response = await getUsers(params);
 
       return response?.data?.map(item => ({
-        label: `${item.firstName} (${RoleLabel[item.role]})`,
+        label: `${item.firstName} (${RoleLabel[item.role as Role]})`,
         value: String(item.id),
       }));
     },
@@ -65,9 +64,9 @@ export const GetReviewedSignature = (id: string) =>
   });
 
 export const UpdateStatus = (
-  options?: UseMutationOptions<unknown, PostError, { id: string; status: RequestStatus }>,
+  options?: UseMutationOptions<unknown, AxiosError, { id: string; status: RequestStatus }>,
 ) =>
-  useMutation<unknown, PostError, { id: string; status: RequestStatus }>({
+  useMutation<unknown, AxiosError, { id: string; status: RequestStatus }>({
     mutationFn: updateStatus,
     ...options,
   });

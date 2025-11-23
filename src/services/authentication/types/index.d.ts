@@ -1,26 +1,28 @@
-export type PayloadsTypes = {
-  email: string;
-  password: string;
-};
+import { Role } from '@/constants/Role';
 
-export type LoginResponseTypes = {
-  accessToken: string;
-  refreshToken?: string;
-};
+// export type PayloadsTypes = {
+//   email: string;
+//   password: string;
+// };
 
-export type ProfileTypes = {
-  id: string;
-  email: string;
+// export type LoginResponseTypes = {
+//   accessToken: string;
+//   refreshToken?: string;
+// };
+
+export type IProfile = {
   firstName: string;
-  lastName: string | null;
-  image: string | null;
-  role: string;
-  socialMedia: string | null;
-  accessToken: string;
-  refreshToken: string;
+  lastName: string;
   isActive: boolean;
-  isManager: boolean;
-  manager: string;
+  socialMedia: string[];
+  role: Role;
+  teamLead: string | null;
+  updatedAt: string | null;
   createdAt: string;
-  updatedAt: string;
+};
+
+export type IChangePassword = {
+  oldPassword?: string;
+  newPassword: string;
+  confirmPassword: string;
 };

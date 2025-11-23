@@ -5,9 +5,9 @@ import Input from '@/ui/components/simple/form/input/InputField';
 import Switch from '@/ui/components/simple/form/Switch';
 import { Post, Update } from './hooks/UseCategory';
 import UseForm from './hooks/UseForm';
-import { FormProps } from './types';
+import { PropsForm } from './types/Form';
 
-const Form = ({ id, data, handleModal, handleSuccess }: FormProps) => {
+const Form = ({ id, data, handleModal, handleSuccess }: PropsForm) => {
   const { form, handleChange, handleSwitch, handleBlur, validate, errors } = UseForm(data);
 
   const { mutate: post, isPending: pendingPost } = Post({
@@ -74,7 +74,7 @@ const Form = ({ id, data, handleModal, handleSuccess }: FormProps) => {
         </div>
         <div className="mt-6">
           <div className="relative">
-            <Switch defaultChecked={form.is_device} label="Is Device" onChange={handleSwitch} />
+            <Switch defaultChecked={form.isDevice} label="Is Device" onChange={handleSwitch} />
           </div>
         </div>
       </div>

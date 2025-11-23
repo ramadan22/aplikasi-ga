@@ -1,13 +1,14 @@
 'use client';
 
-import { RequestStatusLabel, SubmissionTypeLabel } from '@/constants/Approval';
+import { RequestStatus, SubmissionType, SubmissionTypeLabel } from '@/constants/Approval';
 import { SubmissionTypes } from '@/data/Approval';
+import { IApproval } from '@/services/approval/types';
+import { IPostParams, IPutParams } from '@/services/approval/types/Request';
 import { useState } from 'react';
 import { array, minLength, object, pipe, safeParse, string } from 'valibot';
-import { DataApproval } from '../types';
-import { FormParams, Option } from '../types/Form';
+import { OptionForm, ParamsForm } from '../types/Form';
 
-const UseForm = (data: DataApproval | undefined) => {
+const UseForm = (data: IApproval | undefined) => {
   const assetRequestSchema = object({
     sn: pipe(string(), minLength(1, 'Serial number is required')),
     name: pipe(string(), minLength(1, 'Name is required')),
@@ -37,12 +38,12 @@ const UseForm = (data: DataApproval | undefined) => {
     category: null,
   };
 
-  const [form, setForm] = useState<FormParams>({
+  const [form, setForm] = useState<ParamsForm>({
     id: data?.id,
     submissionType: data?.submissionType
       ? { label: SubmissionTypeLabel[data?.submissionType], value: data?.submissionType }
       : null,
-    status: data?.status ? { label: RequestStatusLabel[data?.status], value: data?.status } : null,
+    status: data?.status || null,
     notes: '',
     approvedBy: [],
     requestedFor: null,
@@ -65,7 +66,7 @@ const UseForm = (data: DataApproval | undefined) => {
     }));
   };
 
-  const handleSelect = (key: string, value: string | Option[] | Option) => {
+  const handleSelect = (key: string, value: string | OptionForm[] | OptionForm | null) => {
     setForm(prev => ({ ...prev, [key]: value }));
   };
 
@@ -81,7 +82,7 @@ const UseForm = (data: DataApproval | undefined) => {
     setForm(prev => ({ ...prev, assetRequest }));
   };
 
-  const handleSelectCategory = (idx: string, value: Option) => {
+  const handleSelectCategory = (idx: string, value: OptionForm) => {
     const assetRequest = form.assetRequest;
     const findIndex = assetRequest.findIndex(row => row.idx === idx);
 
@@ -140,7 +141,7 @@ const UseForm = (data: DataApproval | undefined) => {
     setForm({ ...form, assetRequest: items });
   };
 
-  const convertFormParams = (approval: FormParams) => {
+  const convertFormParams = (approval: ParamsForm): IPostParams | IPutParams => {
     const assetsPayload = approval.assetRequest.flatMap(row => {
       const qty = Number(row.quantity) || 1;
 
@@ -164,11 +165,10 @@ const UseForm = (data: DataApproval | undefined) => {
     }));
 
     const payload = {
-      id: approval.id,
-      requestedForId: approval.requestedFor?.value || null,
-      submissionType: approval.submissionType?.value,
-      status: approval.status?.value || 'DRAFT',
       notes: approval.notes,
+      submissionType: approval.submissionType?.value as SubmissionType,
+      requestedForId: approval.requestedFor?.value || '',
+      status: (approval.status as RequestStatus) || RequestStatus.DRAFT,
       assets: assetsPayload,
       signatures: signaturesPayload,
     };

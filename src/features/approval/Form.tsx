@@ -13,11 +13,9 @@ import { FaRegTrashAlt } from 'react-icons/fa';
 import { GetApprovers, GetUsers, Post, Update } from './hooks/UseApproval';
 import { Get as CategoryGet } from './hooks/UseCategories';
 import UseForm from './hooks/UseForm';
-import { FormProps } from './types/Form';
+import { PropsForm } from './types/Form';
 
-const Form = ({ id, process = '', data, handleModal, handleSuccess }: FormProps) => {
-  console.log(id);
-
+const Form = ({ id, process = '', data, handleModal, handleSuccess }: PropsForm) => {
   const { data: loginData } = useSession();
 
   const {
@@ -92,7 +90,12 @@ const Form = ({ id, process = '', data, handleModal, handleSuccess }: FormProps)
             <Select
               defaultValue={form?.submissionType?.value}
               options={SubmissionTypes}
-              onChange={value => handleSelect('submissionType', value)}
+              onChange={value =>
+                handleSelect(
+                  'submissionType',
+                  SubmissionTypes.find(row => row.value === value) || null,
+                )
+              }
             />
           </div>
         )}

@@ -1,14 +1,11 @@
-import { GetParams } from '@/services/asset/types';
+// import { GetParams } from '@/services/asset/types';
 import { deleteData, get, getById, post, queries, update } from '@/services/category';
 import {
   DeleteMutationOptions,
-  ID,
-  PostError,
-  PostInput,
+  GetParams,
   PostMutationOptions,
-  PostOutput,
-  UpdateMutationOptions,
-} from '@/services/category/types';
+  PutMutationOptions,
+} from '@/services/category/types/Request';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
 export const Get = (params: GetParams = {}) =>
@@ -25,19 +22,19 @@ export const GetById = (id: string, params: GetParams = {}) =>
   });
 
 export const Post = (options?: PostMutationOptions) =>
-  useMutation<PostOutput, PostError, PostInput>({
+  useMutation({
     mutationFn: post,
     ...options,
   });
 
-export const Update = (options?: UpdateMutationOptions) =>
-  useMutation<PostOutput, PostError, PostInput>({
+export const Update = (options?: PutMutationOptions) =>
+  useMutation({
     mutationFn: update,
     ...options,
   });
 
 export const Delete = (options?: DeleteMutationOptions) =>
-  useMutation<PostOutput, PostError, ID>({
+  useMutation({
     mutationFn: deleteData,
     ...options,
   });

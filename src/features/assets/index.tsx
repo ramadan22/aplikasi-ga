@@ -1,12 +1,13 @@
 'use client';
 
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 import { defaultParams } from '@/data/Table';
+import { IAsset } from '@/services/asset/types';
 import TableDataUI from '@/ui/components/common/TableData';
 import { Modal } from '@/ui/components/simple/modal';
 import { useModal } from '@/utils/UseModal';
-import { handlePaginationChange } from '@/utils/UseTable';
+import UsePagination from '@/utils/UsePagination';
 import { Props } from '../assets/types';
 import Form from './Form';
 import { Get } from './hooks/UseAssets';
@@ -14,8 +15,8 @@ import UseStable from './hooks/UseTable';
 
 const AssetsFeature = ({ params }: Props) => {
   const router = useRouter();
-  const pathname = usePathname();
   const searchParams = useSearchParams();
+  const { handlePaginationChange } = UsePagination();
   const { isOpen, openModal, closeModal } = useModal();
 
   const { tableHeaders, setAction, action, keyword, setKeyword } = UseStable();
@@ -24,12 +25,12 @@ const AssetsFeature = ({ params }: Props) => {
 
   const modalClosed = () => {
     closeModal();
-    setAction({ id: '', action: '' });
+    setAction({ id: '', type: '' });
   };
 
   return (
     <>
-      <TableDataUI
+      <TableDataUI<IAsset>
         isButtonDetail
         isButtonDelete={false}
         isButtonEdit={false}
@@ -42,13 +43,7 @@ const AssetsFeature = ({ params }: Props) => {
             return;
           }
 
-          handlePaginationChange({
-            key,
-            value,
-            searchParams,
-            pathname,
-            router,
-          });
+          handlePaginationChange({ key, value });
         }}
         handleButtonAction={(key, __, item) => {
           const segment = (item as { name: string })?.name;
@@ -64,7 +59,7 @@ const AssetsFeature = ({ params }: Props) => {
         }}
       />
       <Modal
-        isOpen={isOpen || action.action === 'edit'}
+        isOpen={isOpen || action.type === 'edit'}
         onClose={() => modalClosed()}
         className="max-w-[700px] p-6 lg:p-10"
       >

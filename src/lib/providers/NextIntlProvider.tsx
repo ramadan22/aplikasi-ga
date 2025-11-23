@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 'use client';
 
 import { IntlProvider } from 'next-intl';
@@ -8,7 +6,7 @@ import type { ReactNode } from 'react';
 type Props = {
   children: ReactNode;
   locale: string;
-  messages: Record<string, any> | null | undefined;
+  messages: Record<string, unknown> | null | undefined;
 };
 
 const IntlClientProvider = ({ children, locale, messages }: Props) => {

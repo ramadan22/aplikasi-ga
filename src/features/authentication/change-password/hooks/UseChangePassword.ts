@@ -1,9 +1,9 @@
 import { changePassword } from '@/services/authentication';
+import { PostMutationChangePassword } from '@/services/authentication/types/Request';
 import { useMutation } from '@tanstack/react-query';
-import { PostError, PostInput, PostMutationOptions, PostOutput } from '../types';
 
-export const Post = (options?: PostMutationOptions) =>
-  useMutation<PostOutput, PostError, PostInput>({
+export const Post = (options?: PostMutationChangePassword) =>
+  useMutation({
     mutationFn: changePassword,
     ...options,
   });

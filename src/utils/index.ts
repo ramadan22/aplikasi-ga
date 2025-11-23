@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 export const buildQueryUrl = (
   pathname: string,
   params: Record<string, string | number | undefined>,
@@ -28,7 +26,7 @@ export const buildQueryUrl = (
  * @param keysToRemove - An array of keys to remove.
  * @returns A new object with the specified keys removed.
  */
-export function removeObjectKeys<T extends Record<string, any>, K extends keyof T>(
+export function removeObjectKeys<T extends Record<string, unknown>, K extends keyof T>(
   obj: T,
   keysToRemove: K[],
 ): Omit<T, K> {

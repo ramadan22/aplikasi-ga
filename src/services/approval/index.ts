@@ -1,18 +1,21 @@
 import { RequestStatus } from '@/constants/Approval';
 import AxiosInstance from '@/lib/axios';
 import { removeObjectKeys } from '@/utils';
+import { IApprovers } from './types';
 import {
-  DataApprovers,
-  GetApproversResponse,
-  GetParams,
-  GetResponse,
+  GetParamsApproval,
+  GetParamsApprovers,
+  GetResponseApproval,
+  GetResponseApprovers,
   GetResponseDetail,
-  GetResponseReviewedSig,
-  PostParams,
-  PostResponse,
-  UpdateParamSignature,
-  UpdateResponseSignature,
-} from './types';
+  IPostParams,
+  IPostResponse,
+  IPutParams,
+  IPutResponse,
+  PutParamSignature,
+  PutResponseSignature,
+  ReviewedSignatureGetRes,
+} from './types/Request';
 
 const queries = {
   GET_APPROVALS: 'GET_APPROVALS',
@@ -21,7 +24,7 @@ const queries = {
   GET_REVIEWED_SIGNATURE: 'GET_REVIEWED_SIGNATURE',
 };
 
-const get = async (params: GetParams = {}): Promise<GetResponse> =>
+const get = async (params: GetParamsApproval): Promise<GetResponseApproval> =>
   new Promise((resolve, reject) => {
     AxiosInstance.get('/approval', {
       params,
@@ -30,7 +33,7 @@ const get = async (params: GetParams = {}): Promise<GetResponse> =>
       .catch(error => reject(error?.response?.data || error));
   });
 
-const getReviewedSignature = async (id: string): Promise<GetResponseReviewedSig> =>
+const getReviewedSignature = async (id: string): Promise<ReviewedSignatureGetRes> =>
   new Promise((resolve, reject) => {
     AxiosInstance.get(`/approval/signature-reviewed-position/${id}`)
       .then(response => resolve(response.data))
@@ -44,13 +47,13 @@ const detail = async (id: string): Promise<GetResponseDetail> =>
       .catch(error => reject(error?.response?.data || error));
   });
 
-const getApprovers = async (params: GetParams = {}): Promise<GetApproversResponse> =>
+const getApprovers = async (params: GetParamsApprovers = {}): Promise<GetResponseApprovers> =>
   new Promise((resolve, reject) => {
     AxiosInstance.get('/approval/getApprovers', {
       params,
     })
       .then(response => {
-        const map = (response.data.data as DataApprovers[]).map(res => ({
+        const map = (response.data.data as IApprovers[]).map(res => ({
           label: res.fullName,
           value: res.id,
         }));
@@ -63,15 +66,13 @@ const getApprovers = async (params: GetParams = {}): Promise<GetApproversRespons
       .catch(error => reject(error?.response?.data || error));
   });
 
-const post = async (params: PostParams): Promise<PostResponse> => {
-  return AxiosInstance.post('/approval', removeObjectKeys(params, ['id'])).then(
-    response => response?.data || null,
-  );
+const post = async (params: IPostParams): Promise<IPostResponse> => {
+  return AxiosInstance.post('/approval', params).then(response => response?.data || null);
 };
 
-const update = async (params: PostParams): Promise<PostResponse> => {
+const update = async (params: IPutParams): Promise<IPutResponse> => {
   const id = params.id;
-  return AxiosInstance.put(`/approval/${id}`, removeObjectKeys(params, ['id'])).then(
+  return AxiosInstance.put(`/approval/${id}`, removeObjectKeys({ ...params }, ['id'])).then(
     response => response?.data || null,
   );
 };
@@ -88,8 +89,8 @@ const updateStatus = async ({
 };
 
 const updatePositionSignature = async (
-  params: UpdateParamSignature,
-): Promise<UpdateResponseSignature> => {
+  params: PutParamSignature,
+): Promise<PutResponseSignature> => {
   const id = params.id;
   return AxiosInstance.put(
     `/approval/update-position/${id}`,

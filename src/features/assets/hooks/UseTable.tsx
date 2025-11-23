@@ -1,6 +1,7 @@
-import { ActionTable } from '@/features/assets/types';
+import { IAsset, IAssetByName } from '@/services/asset/types';
 import BooleanBadge from '@/ui/components/common/BooleanBadge';
 import { useState } from 'react';
+import { TableAction } from '../types/Table';
 
 const UseStable = () => {
   const tableHeaders = [
@@ -57,9 +58,9 @@ const UseStable = () => {
   ];
 
   const [keyword, setKeyword] = useState('');
-  const [action, setAction] = useState<ActionTable>({
+  const [action, setAction] = useState<TableAction<IAsset | IAssetByName>>({
     id: '',
-    action: '',
+    type: '',
     data: undefined,
   });
 

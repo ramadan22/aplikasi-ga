@@ -1,15 +1,17 @@
 import AxiosInstance from '@/lib/axios';
 import { formatDateToWIB } from '@/lib/date-fns';
 import { removeObjectKeys } from '@/utils';
+import { IAssetByName } from './types';
 import {
-  DataAssetsByName,
-  GetByIdResponse,
   GetParams,
   GetResponse,
   GetResponseAssetsByName,
-  PostParams,
+  GetResponseById,
+  IPostParams,
+  IPutParams,
   PostResponse,
-} from './types';
+  PutResponse,
+} from './types/Request';
 
 const queries = {
   GET_ASSETS: 'GET_ASSETS',
@@ -31,7 +33,7 @@ const getByName = async (params: GetParams = {}): Promise<GetResponseAssetsByNam
       params: removeObjectKeys(params, ['name']),
     })
       .then(response => {
-        const map = (response.data.data as DataAssetsByName[]).map(res => ({
+        const map = (response.data.data as IAssetByName[]).map(res => ({
           ...res,
           createdAt: formatDateToWIB(res.createdAt),
         }));
@@ -44,13 +46,13 @@ const getByName = async (params: GetParams = {}): Promise<GetResponseAssetsByNam
       .catch(error => reject(error?.response?.data || error));
   });
 
-const getById = async (id: string, params: GetParams = {}): Promise<GetByIdResponse> =>
+const getById = async (id: string, params: GetParams = {}): Promise<GetResponseById> =>
   new Promise((resolve, reject) => {
     AxiosInstance.get(`/assets/${id}`, {
       params,
     })
       .then(response => {
-        const row: GetByIdResponse = {
+        const row: GetResponseById = {
           ...response.data.data,
           createdAt: formatDateToWIB(`${response.data.data?.createdAt}`),
         };
@@ -63,12 +65,12 @@ const getById = async (id: string, params: GetParams = {}): Promise<GetByIdRespo
       .catch(error => reject(error?.response?.data || error));
   });
 
-const post = async (params: PostParams): Promise<PostResponse> =>
+const post = async (params: IPostParams): Promise<PostResponse> =>
   AxiosInstance.post('/assets', params).then(response => response?.data || null);
 
-const update = async (params: PostParams): Promise<PostResponse> => {
+const update = async (params: IPutParams): Promise<PutResponse> => {
   const id = params.id;
-  return AxiosInstance.put(`/assets/${id}`, removeObjectKeys(params, ['id'])).then(
+  return AxiosInstance.put(`/assets/${id}`, removeObjectKeys({ ...params }, ['id'])).then(
     response => response?.data || null,
   );
 };

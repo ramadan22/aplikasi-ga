@@ -1,5 +1,5 @@
 import { get, queries } from '@/services/category';
-import { GetParams } from '@/services/category/types';
+import { GetParams } from '@/services/category/types/Request';
 import { useQuery } from '@tanstack/react-query';
 
 export const Get = (params: GetParams = {}) =>

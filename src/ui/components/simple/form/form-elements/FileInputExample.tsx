@@ -5,11 +5,11 @@ import Label from '../Label';
 import FileInput from '../input/FileInput';
 
 const FileInputExample = () => {
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      console.log('Selected file:', file.name);
-    }
+  const handleFileChange = (_: React.ChangeEvent<HTMLInputElement>) => {
+    // const file = event.target.files?.[0];
+    // if (file) {
+    //   console.log('Selected file:', file.name);
+    // }
   };
 
   return (

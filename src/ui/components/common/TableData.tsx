@@ -28,7 +28,7 @@ export type TableHeaderField = {
   render?: (value: any) => React.ReactNode;
 };
 
-export type PropsTypes = {
+export type PropsTypes<T = object> = {
   isButtonDetail?: boolean;
   isButtonDelete?: boolean;
   isButtonEdit?: boolean;
@@ -41,12 +41,12 @@ export type PropsTypes = {
   meta?: PaginationSorterTypes;
   handleButtonAction?: (
     value: 'add' | 'edit' | 'delete' | 'detail' | null,
-    id: string | number | null,
-    data?: object,
+    id?: string,
+    data?: T,
   ) => void;
 };
 
-const TableDataUI = ({
+const TableDataUI = <T,>({
   isButtonDetail,
   isButtonDelete = true,
   isButtonEdit = true,
@@ -57,7 +57,7 @@ const TableDataUI = ({
   isLoading,
   handleButtonAction,
   handleChangeParams,
-}: PropsTypes) => {
+}: PropsTypes<T>) => {
   const [search, setSearch] = useState('');
   const debouncedSearch = useDebounce(search, 500);
 
@@ -86,7 +86,7 @@ const TableDataUI = ({
           <Button
             size="xs"
             onClick={() => {
-              if (handleButtonAction) handleButtonAction('add', null);
+              if (handleButtonAction) handleButtonAction('add');
             }}
           >
             Add Data

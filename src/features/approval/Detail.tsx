@@ -6,45 +6,20 @@ import {
   SubmissionType,
   SubmissionTypeLabel,
 } from '@/constants/Approval';
-import { RoleLabel } from '@/constants/Role';
+import { Role, RoleLabel } from '@/constants/Role';
 import Button from '@/ui/components/simple/button/Button';
 import { useSession } from 'next-auth/react';
 import { FaEye } from 'react-icons/fa';
 import { GetReviewedSignature } from './hooks/UseApproval';
-import { DataApproval, GroupedAsset } from './types';
+import UseDetail from './hooks/UseDetail';
+import { PropsDetail } from './types/Detail';
 
-interface DetailProps {
-  handleProcess: (data: DataApproval) => void;
-  handleReject: (id: string) => void;
-  data: DataApproval | null;
-}
-
-const Detail = ({ handleProcess, handleReject, data }: DetailProps) => {
+const Detail = ({ handleProcess, handleReject, data }: PropsDetail) => {
   const { data: loginData } = useSession();
 
   if (!data) return null;
 
-  const createdByName = `${data.createdBy.firstName} ${data.createdBy.lastName || ''}`.trim();
-
-  const groupedAssets: GroupedAsset[] = Object.values(
-    data.assets?.reduce<Record<string, GroupedAsset>>((acc, item) => {
-      const key = item.name;
-
-      if (!acc[key]) {
-        acc[key] = {
-          name: item.name,
-          count: 0,
-          isMaintenance: item.isMaintenance,
-          categoryId: item.categoryId,
-          category: item.category,
-        };
-      }
-
-      acc[key].count += 1;
-
-      return acc;
-    }, {}) ?? {},
-  );
+  const { createdByName, groupedAssets, isEdit } = UseDetail(data);
 
   const { data: reviewedSig, isLoading } = GetReviewedSignature(data.id);
 
@@ -172,13 +147,15 @@ const Detail = ({ handleProcess, handleReject, data }: DetailProps) => {
                   data.signatures.map(item => (
                     <tr key={item.id} className="border-t border-gray-100 dark:border-gray-800">
                       <td className="px-4 py-2 font-semibold text-gray-900 dark:text-white">
-                        {item.user.firstName}
+                        {item.user?.firstName}
                         &nbsp;
-                        {item.user.lastName}
+                        {item.user?.firstName}
                       </td>
-                      <td className="px-4 py-2 text-gray-900 dark:text-white">{item.user.email}</td>
+                      <td className="px-4 py-2 text-gray-900 dark:text-white">
+                        {item.user?.email}
+                      </td>
                       <td className="px-4 py-2 text-gray-700 dark:text-gray-300">
-                        {RoleLabel[item.user.role]}
+                        {RoleLabel[item.user?.role as Role]}
                       </td>
                       <td className="px-4 py-2 text-gray-700 dark:text-gray-300">
                         {item.signedAt ?? '-'}
@@ -211,6 +188,7 @@ const Detail = ({ handleProcess, handleReject, data }: DetailProps) => {
             Reject
           </Button>
           <Button
+            onClick={() => handleProcess(data, isEdit)}
             disabled={
               isLoading ||
               (data.submissionType === 'PROCUREMENT' &&
@@ -219,9 +197,6 @@ const Detail = ({ handleProcess, handleReject, data }: DetailProps) => {
                 data.signatures.length > 0 &&
                 !reviewedSig?.data?.isReviewed)
             }
-            onClick={() => {
-              handleProcess(data);
-            }}
           >
             Process
           </Button>

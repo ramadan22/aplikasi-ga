@@ -9,7 +9,7 @@ import SearchSelect from '@/ui/components/simple/form/SearchSelect';
 import { Post, Update } from './hooks/UseAssets';
 import { Get as CategoryGet } from './hooks/UseCategories';
 import UseForm from './hooks/UseForm';
-import { FormProps } from './types';
+import { FormProps } from './types/Form';
 
 const Form = ({ id, data, handleModal, handleSuccess }: FormProps) => {
   const {

@@ -3,7 +3,8 @@
 import { ValidationForm } from '@/lib/valibot';
 import { useState } from 'react';
 import { minLength, object, pipe, string } from 'valibot';
-import { DataAssetsByName, FormParams, Option } from '../types';
+import { DataAssetsByName } from '../types';
+import { FormOption, FormParams } from '../types/Form';
 
 const UseForm = (data: DataAssetsByName | undefined) => {
   const assetSchema = object({
@@ -67,7 +68,7 @@ const UseForm = (data: DataAssetsByName | undefined) => {
     }));
   };
 
-  const handleSelect = (item: Option) => {
+  const handleSelect = (item: FormOption) => {
     setForm(prev => ({ ...prev, category: item }));
   };
 
@@ -83,8 +84,6 @@ const UseForm = (data: DataAssetsByName | undefined) => {
   const validate = (e: React.FormEvent) => {
     e.preventDefault();
     const result = validateForm(convertFormParams(form));
-
-    console.log('result', result);
 
     if (!result.success) {
       setErrors(result.errors);

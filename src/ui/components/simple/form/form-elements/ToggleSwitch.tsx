@@ -4,8 +4,8 @@ import ComponentCard from '@/ui/components/common/ComponentCard';
 import Switch from '../Switch';
 
 const ToggleSwitch = () => {
-  const handleSwitchChange = (checked: boolean) => {
-    console.log('Switch is now:', checked ? 'ON' : 'OFF');
+  const handleSwitchChange = (_: boolean) => {
+    // console.log('Switch is now:', checked ? 'ON' : 'OFF');
   };
   return (
     <ComponentCard title="Toggle switch input">
