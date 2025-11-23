@@ -77,7 +77,7 @@ const AppSidebar: React.FC = () => {
             nav.path && (
               <Link
                 href={nav.path}
-                onClick={toggleMobileSidebar}
+                onClick={isMobileOpen ? toggleMobileSidebar : () => {}}
                 className={`menu-item group ${isActive(nav.path) ? 'menu-item-active' : 'menu-item-inactive'}`}
               >
                 <span
@@ -109,7 +109,7 @@ const AppSidebar: React.FC = () => {
                   <li key={subItem.name}>
                     <Link
                       href={subItem.path}
-                      onClick={toggleMobileSidebar}
+                      onClick={isMobileOpen ? toggleMobileSidebar : () => {}}
                       className={`menu-dropdown-item ${isActive(subItem.path) ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'}`}
                     >
                       {subItem.name}
