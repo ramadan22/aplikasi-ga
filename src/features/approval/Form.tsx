@@ -7,7 +7,6 @@ import ButtonWithSpinner from '@/ui/components/simple/button/ButtonWithSpinner';
 import Input from '@/ui/components/simple/form/input/InputField';
 import TextArea from '@/ui/components/simple/form/input/TextArea';
 import SearchSelect from '@/ui/components/simple/form/SearchSelect';
-import Select from '@/ui/components/simple/form/Select';
 import { useSession } from 'next-auth/react';
 import { FaRegTrashAlt } from 'react-icons/fa';
 import { GetApprovers, GetUsers, Post, Update } from './hooks/UseApproval';
@@ -87,7 +86,7 @@ const Form = ({ id, process = '', data, handleModal, handleSuccess }: PropsForm)
             <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
               Submission type
             </label>
-            <Select
+            {/* <Select
               defaultValue={form?.submissionType?.value}
               options={SubmissionTypes}
               onChange={value =>
@@ -96,6 +95,13 @@ const Form = ({ id, process = '', data, handleModal, handleSuccess }: PropsForm)
                   SubmissionTypes.find(row => row.value === value) || null,
                 )
               }
+            /> */}
+            <SearchSelect
+              data={SubmissionTypes}
+              selected={form?.submissionType}
+              onSelect={value => handleSelect('submissionType', value)}
+              // onSearchNotFound={value => setUserKey(value)}
+              loading={loadingGetUsers}
             />
           </div>
         )}

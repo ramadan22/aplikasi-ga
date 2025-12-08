@@ -118,7 +118,7 @@ const Detail = ({ handleProcess, handleReject, data }: PropsDetail) => {
           <div className="border border-gray-100 dark:border-gray-800 rounded-lg overflow-hidden">
             <div className="flex justify-between px-4 py-3 border-b border-gray-100 dark:border-gray-800">
               <p className="text-base font-semibold text-gray-800 dark:text-white">Signers</p>
-              {data.status !== RequestStatus.REJECT && (
+              {data.status !== RequestStatus.REJECT && loginData?.user.role === Role.GA && (
                 <Button
                   disabled={isLoading}
                   onClick={() => {
@@ -129,7 +129,7 @@ const Detail = ({ handleProcess, handleReject, data }: PropsDetail) => {
                   className="px-2 py-1 rounded text-[10px] border-none shadow-none"
                 >
                   <FaEye />
-                  Review
+                  Review Document
                 </Button>
               )}
             </div>
@@ -150,7 +150,7 @@ const Detail = ({ handleProcess, handleReject, data }: PropsDetail) => {
                       <td className="px-4 py-2 font-semibold text-gray-900 dark:text-white">
                         {item.user?.firstName}
                         &nbsp;
-                        {item.user?.firstName}
+                        {item.user?.lastName}
                       </td>
                       <td className="px-4 py-2 text-gray-900 dark:text-white">
                         {item.user?.email}
@@ -159,7 +159,21 @@ const Detail = ({ handleProcess, handleReject, data }: PropsDetail) => {
                         {RoleLabel[item.user?.role as Role]}
                       </td>
                       <td className="px-4 py-2 text-gray-700 dark:text-gray-300">
-                        {item.signedAt ?? '-'}
+                        {item.signedAt ?? (
+                          <>
+                            {item.user?.id === loginData?.user.id ? (
+                              <a
+                                className="text-blue-500"
+                                href={`/approval-document?id=${data.id}`}
+                                target="_blank"
+                              >
+                                Sign Here
+                              </a>
+                            ) : (
+                              '-'
+                            )}
+                          </>
+                        )}
                       </td>
                     </tr>
                   ))
@@ -188,19 +202,21 @@ const Detail = ({ handleProcess, handleReject, data }: PropsDetail) => {
           >
             Reject
           </Button>
-          <Button
-            onClick={() => handleProcess(data, isEdit)}
-            disabled={
-              isLoading ||
-              (data.submissionType === 'PROCUREMENT' &&
-                data.status === 'DRAFT' &&
-                data.assets.length > 0 &&
-                data.signatures.length > 0 &&
-                !reviewedSig?.data?.isReviewed)
-            }
-          >
-            Process
-          </Button>
+          {data.status !== RequestStatus.DONE && data.status !== RequestStatus.WAITING_APPROVAL && (
+            <Button
+              onClick={() => handleProcess(data, isEdit)}
+              disabled={
+                isLoading ||
+                (data.submissionType === 'PROCUREMENT' &&
+                  data.status === 'DRAFT' &&
+                  data.assets.length > 0 &&
+                  data.signatures.length > 0 &&
+                  !reviewedSig?.data?.isReviewed)
+              }
+            >
+              Process
+            </Button>
+          )}
         </div>
       )}
     </>

@@ -9,6 +9,7 @@ import { Modal } from '@/ui/components/simple/modal';
 import { useModal } from '@/utils/UseModal';
 import UsePagination from '@/utils/UsePagination';
 import { useSearchParams } from 'next/navigation';
+import { useEffect } from 'react';
 import Detail from './Detail';
 import Form from './Form';
 import { Get, UpdateStatus } from './hooks/UseApproval';
@@ -21,7 +22,7 @@ const ApprovalFeature = ({ params }: Props) => {
   const { tableHeaders, setAction, action } = UseStable();
   const { openModal, closeModal } = useModal();
 
-  const { data: approvals, isLoading, refetch } = Get(params);
+  const { data: approvals, isLoading, refetch, isRefetching } = Get(params);
 
   const { mutate: handleReject, isPending: isPendingReject } = UpdateStatus({
     onSuccess: () => {
@@ -38,6 +39,14 @@ const ApprovalFeature = ({ params }: Props) => {
     closeModal();
     setAction({ id: '', type: '' });
   };
+
+  useEffect(() => {
+    if (action.type === 'detail') {
+      const find = approvals?.data?.find(item => item.id === action.id);
+      if (find?.status !== action.data?.status)
+        setAction({ id: find?.id, type: 'detail', data: find });
+    }
+  }, [isRefetching]);
 
   return (
     <>

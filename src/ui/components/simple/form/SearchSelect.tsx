@@ -255,43 +255,45 @@ const SearchSelect: React.FC<SearchSelectProps> = ({
         )}
         style={{ maxHeight: DROPDOWN_ESTIMATED_HEIGHT }}
       >
-        <div className="relative px-2 pt-2">
-          <input
-            type="text"
-            value={keyword}
-            onChange={e => setKeyword(e.target.value)}
-            placeholder="Search..."
-            className={cn(
-              'w-full rounded-lg border bg-transparent shadow-theme-xs focus:outline-hidden focus:ring-3 focus:ring-brand-500/10',
-              sizeClasses.input,
-              'dark:border-gray-700 dark:bg-gray-900 dark:text-white/90',
+        {onSearchNotFound && (
+          <div className="relative px-2 pt-2">
+            <input
+              type="text"
+              value={keyword}
+              onChange={e => setKeyword(e.target.value)}
+              placeholder="Search..."
+              className={cn(
+                'w-full rounded-lg border bg-transparent shadow-theme-xs focus:outline-hidden focus:ring-3 focus:ring-brand-500/10',
+                sizeClasses.input,
+                'dark:border-gray-700 dark:bg-gray-900 dark:text-white/90',
+              )}
+            />
+            {isLoading && (
+              <div className="absolute top-1/2 right-4 -translate-y-1/2">
+                <svg
+                  className="animate-spin h-5 w-5 text-gray-400"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                    className="opacity-25"
+                  />
+                  <path
+                    fill="currentColor"
+                    className="opacity-75"
+                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                  />
+                </svg>
+              </div>
             )}
-          />
-          {isLoading && (
-            <div className="absolute top-1/2 right-4 -translate-y-1/2">
-              <svg
-                className="animate-spin h-5 w-5 text-gray-400"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <circle
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                  className="opacity-25"
-                />
-                <path
-                  fill="currentColor"
-                  className="opacity-75"
-                  d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-                />
-              </svg>
-            </div>
-          )}
-        </div>
+          </div>
+        )}
 
         <div className="px-2 pb-2">
           {filteredList.length > 0 ? (

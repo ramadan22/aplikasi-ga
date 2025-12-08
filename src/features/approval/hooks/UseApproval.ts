@@ -24,6 +24,9 @@ export const Get = (params: GetParamsApproval) =>
   useQuery({
     queryKey: [queriesApproval.GET_APPROVALS, params],
     queryFn: () => getApi(params),
+    refetchOnWindowFocus: 'always',
+    refetchOnReconnect: 'always',
+    refetchIntervalInBackground: true,
   });
 
 export const Post = (options?: ApprovalPostMutationOptions) =>

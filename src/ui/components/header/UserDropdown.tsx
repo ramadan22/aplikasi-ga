@@ -18,8 +18,8 @@ const UserDropdown = () => {
     setIsOpen(prev => !prev);
   };
 
-  const closeDropdown = () => {
-    toggleDropdown();
+  const closeDropdown = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    toggleDropdown(e);
     setIsOpen(false);
   };
 

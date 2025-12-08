@@ -141,7 +141,7 @@ const TableDataUI = <T,>({
                       <div className="flex items-center justify-center gap-x-2">
                         {isButtonDetail && (
                           <Button
-                            className="p-2.5 bg-warning-500 dark:bg-warning-500/15"
+                            className="p-2.5 bg-warning-500 hover:bg-warning-600 dark:bg-warning-500/15"
                             onClick={() => {
                               const id =
                                 item[`${headers.find(item2 => item2.header === 'ID')?.key}`] ||
@@ -154,7 +154,7 @@ const TableDataUI = <T,>({
                         )}
                         {isButtonEdit && (
                           <Button
-                            className="p-2.5 bg-brand-500 dark:bg-brand-500/15"
+                            className="p-2.5 bg-brand-500 hover:bg-brand-600 dark:bg-brand-500/15"
                             onClick={() => {
                               const id =
                                 item[`${headers.find(item2 => item2.header === 'ID')?.key}`] ||
@@ -167,7 +167,7 @@ const TableDataUI = <T,>({
                         )}
                         {isButtonDelete && (
                           <Button
-                            className="p-2.5 bg-error-500 dark:bg-error-500/15"
+                            className="p-2.5 bg-error-500 hover:bg-error-600 dark:bg-error-500/15"
                             onClick={() => {
                               const id =
                                 item[`${headers.find(item2 => item2.header === 'ID')?.key}`] ||

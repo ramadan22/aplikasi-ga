@@ -36,3 +36,8 @@ export function removeObjectKeys<T extends Record<string, unknown>, K extends ke
   }
   return result;
 }
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const ErrorConvertToMessage = (err: any) => {
+  return err?.response?.data?.message || err?.message || 'Something wrong!';
+};

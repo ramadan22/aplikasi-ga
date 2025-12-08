@@ -18,6 +18,6 @@ export const roleAccess: Record<Role, string[]> = {
   [Role.STAFF]: ['/', '/profile'],
   [Role.GA]: ['/', '/assets', '/categories', '/approval', '/profile'],
   [Role.COORDINATOR]: ['/', '/profile'],
-  [Role.LEAD]: ['/', '/profile'],
-  [Role.MANAGER]: ['/', '/profile'],
+  [Role.LEAD]: ['/', '/approval', '/profile'],
+  [Role.MANAGER]: ['/', '/approval', '/profile'],
 };

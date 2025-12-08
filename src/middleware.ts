@@ -44,12 +44,19 @@ function getAllowedRolesForPath(pathname: string): Role[] | undefined {
 
   const allPaths = getAllNavPaths();
 
-  const matched = allPaths.find(p => normalized.startsWith(p));
+  // PRIORITAS: Find exact match dulu
+  let matched = allPaths.find(p => p === normalized);
 
-  if (!matched) return undefined;
+  // Jika tidak ada exact match, baru pakai startsWith tapi SKIP '/'
+  if (!matched) {
+    matched = allPaths.filter(p => p !== '/').find(p => normalized.startsWith(p));
+  }
+
+  // Jika tetap tidak ada match → berarti page bebas untuk semua role
+  if (!matched) return Object.values(Role);
 
   const allowedRoles = Object.entries(roleAccess)
-    .filter(([, paths]) => paths.includes(matched))
+    .filter(([, paths]) => paths.includes(matched!))
     .map(([role]) => role as Role);
 
   return allowedRoles.length ? allowedRoles : undefined;
@@ -110,7 +117,13 @@ export async function middleware(req: NextRequest) {
   }
 
   if (isAuth) {
-    const cleanPath = pathname.replace(`/${currentLocale}`, '');
+    const cleanPath =
+      pathname
+        .replace(`/${currentLocale}`, '')
+        .replace(/\/$/, '') // remove trailing slash
+        .split('?')[0] || // remove querystring
+      '/';
+
     const userRole = token?.role as Role;
     const allowedRoles = getAllowedRolesForPath(cleanPath);
 

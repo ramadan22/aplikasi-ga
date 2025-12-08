@@ -75,3 +75,17 @@ export type PutResponseSignature = ResponseApiTypes<
 >;
 
 export type PutMutationOptionsSignature = MutationConfig<ResponseSignature, PutParamSignature>;
+
+interface IPostParamsSignApproval {
+  id: string;
+  image: string;
+  approvalId: string;
+}
+
+export type PostMutationOptionsSignApproval = MutationConfig<object, IPostParamsSignApproval>;
+export type IPostResponseSignApproval = ResponseApiTypes<object>;
+
+/**
+ * Get previous signature
+ */
+export type GetResponsePreviousSignature = ResponseApiTypes<{ image: string }>;

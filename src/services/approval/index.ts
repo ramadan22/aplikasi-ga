@@ -8,8 +8,11 @@ import {
   GetResponseApproval,
   GetResponseApprovers,
   GetResponseDetail,
+  GetResponsePreviousSignature,
   IPostParams,
+  IPostParamsSignApproval,
   IPostResponse,
+  IPostResponseSignApproval,
   IPutParams,
   IPutResponse,
   PutParamSignature,
@@ -22,6 +25,7 @@ const queries = {
   GET_APPROVALS_BY_NAME: 'GET_APPROVALS_BY_NAME',
   GET_APPROVERS: 'GET_APPROVERS',
   GET_REVIEWED_SIGNATURE: 'GET_REVIEWED_SIGNATURE',
+  GET_PREVIOUS_SIGNATURE: 'GET_PREVIOUS_SIGNATURE',
 };
 
 const get = async (params: GetParamsApproval): Promise<GetResponseApproval> =>
@@ -98,12 +102,30 @@ const updatePositionSignature = async (
   ).then(response => response?.data || null);
 };
 
+const postSignApproval = async (
+  params: IPostParamsSignApproval,
+): Promise<IPostResponseSignApproval> => {
+  return AxiosInstance.post(
+    `/approval/sign-approval/${params.id}`,
+    removeObjectKeys({ ...params }, ['id']),
+  ).then(response => response?.data || null);
+};
+
+const getPreviousSignature = async (): Promise<GetResponsePreviousSignature> =>
+  new Promise((resolve, reject) => {
+    AxiosInstance.get('/approval/get-previous-signature')
+      .then(response => resolve(response.data))
+      .catch(error => reject(error?.response?.data || error));
+  });
+
 export {
   detail,
   get,
   getApprovers,
+  getPreviousSignature,
   getReviewedSignature,
   post,
+  postSignApproval,
   queries,
   update,
   updatePositionSignature,
