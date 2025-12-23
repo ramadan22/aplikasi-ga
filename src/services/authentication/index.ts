@@ -47,3 +47,8 @@ export const changePassword = async (params: IPostChangePassword) =>
   AxiosInstance.post('/authentication/change-password', params).then(
     response => response?.data || null,
   );
+
+export const resetPassword = async (params: { id: string }) =>
+  AxiosInstance.post('/authentication/reset-password', params).then(
+    response => response?.data || null,
+  );

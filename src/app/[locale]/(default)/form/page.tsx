@@ -12,9 +12,8 @@ import ToggleSwitch from '@/ui/components/simple/form/form-elements/ToggleSwitch
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Next.js Form Elements | TailAdmin - Next.js Dashboard Template',
-  description:
-    'This is Next.js Form Elements page for TailAdmin - Next.js Tailwind CSS Admin Dashboard Template',
+  title: 'General Affairs Administration',
+  description: 'Internal administration interface for managing GA modules and services.',
 };
 
 const FormElementsPage = () => {

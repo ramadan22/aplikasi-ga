@@ -86,21 +86,10 @@ const Form = ({ id, process = '', data, handleModal, handleSuccess }: PropsForm)
             <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
               Submission type
             </label>
-            {/* <Select
-              defaultValue={form?.submissionType?.value}
-              options={SubmissionTypes}
-              onChange={value =>
-                handleSelect(
-                  'submissionType',
-                  SubmissionTypes.find(row => row.value === value) || null,
-                )
-              }
-            /> */}
             <SearchSelect
               data={SubmissionTypes}
               selected={form?.submissionType}
               onSelect={value => handleSelect('submissionType', value)}
-              // onSearchNotFound={value => setUserKey(value)}
               loading={loadingGetUsers}
             />
           </div>

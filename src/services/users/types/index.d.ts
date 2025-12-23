@@ -4,11 +4,22 @@ export interface IUser {
   id: string;
   firstName: string;
   lastName: string;
+  email: string;
   image: string;
   isActive: boolean;
   socialMedia: string[];
   role: Role;
-  teamLead: string | null;
   updatedAt: string | null;
   createdAt: string;
+}
+
+export interface IUserRegister {
+  plainPassword: string;
+  email: string;
+  firstName: string;
+  id: string;
+  role: Role;
+  isActive: boolean;
+  updatedAt: Date;
+  createdAt: Date;
 }

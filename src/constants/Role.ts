@@ -15,9 +15,9 @@ export const RoleLabel: Record<Role, string> = {
 };
 
 export const roleAccess: Record<Role, string[]> = {
-  [Role.STAFF]: ['/', '/profile'],
-  [Role.GA]: ['/', '/assets', '/categories', '/approval', '/profile'],
-  [Role.COORDINATOR]: ['/', '/profile'],
+  [Role.STAFF]: ['/', '/approval', '/profile'],
+  [Role.GA]: ['/', '/assets', '/categories', '/approval', '/profile', '/users'],
+  [Role.COORDINATOR]: ['/', '/approval', '/profile'],
   [Role.LEAD]: ['/', '/approval', '/profile'],
   [Role.MANAGER]: ['/', '/approval', '/profile'],
 };

@@ -3,7 +3,7 @@
 import { RequestStatus } from '@/constants/Approval';
 import { defaultParams } from '@/data/Table';
 import { messageError, messageSuccess } from '@/lib/react-toastify';
-import DeleteConfirmModal from '@/ui/components/common/ModalConfirm';
+import ModalConfirm from '@/ui/components/common/ModalConfirm';
 import TableDataUI from '@/ui/components/common/TableData';
 import { Modal } from '@/ui/components/simple/modal';
 import { useModal } from '@/utils/UseModal';
@@ -113,7 +113,7 @@ const ApprovalFeature = ({ params }: Props) => {
           }}
         />
       </Modal>
-      <DeleteConfirmModal
+      <ModalConfirm
         isOpen={action.type === 'delete'}
         onClose={() => modalClosed()}
         onConfirm={() => handleReject({ id: action?.id || '', status: RequestStatus.REJECT })}

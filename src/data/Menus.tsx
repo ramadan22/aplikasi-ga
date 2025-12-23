@@ -1,8 +1,8 @@
-import { GridIcon, PieChartIcon, UserCircleIcon } from '@/assets/icons';
+import { GridIcon, UserCircleIcon } from '@/assets/icons';
 import { JSX } from 'react';
 import { BiCategoryAlt } from 'react-icons/bi';
 import { MdApproval } from 'react-icons/md';
-import { PiLaptop } from 'react-icons/pi';
+import { PiLaptop, PiUsersThree } from 'react-icons/pi';
 
 export type NavItem = {
   icon?: JSX.Element;
@@ -37,26 +37,31 @@ export const navItems: NavItem[] = [
     path: '/approval',
   },
   {
-    icon: <UserCircleIcon />,
-    name: 'User Profile',
-    path: '/profile',
+    icon: <PiUsersThree size={24} />,
+    name: 'Users',
+    path: '/users',
   },
 ];
 
 export const othersItems: NavItem[] = [
   {
-    icon: <PieChartIcon />,
-    name: 'Charts',
-    subItems: [
-      {
-        icon: <GridIcon />,
-        name: 'Line Chart',
-        path: '/line-chart',
-      },
-      {
-        name: 'Bar Chart',
-        path: '/bar-chart',
-      },
-    ],
+    icon: <UserCircleIcon />,
+    name: 'User Profile',
+    path: '/profile',
   },
+  // {
+  //   icon: <PieChartIcon />,
+  //   name: 'Charts',
+  //   subItems: [
+  //     {
+  //       icon: <GridIcon />,
+  //       name: 'Line Chart',
+  //       path: '/line-chart',
+  //     },
+  //     {
+  //       name: 'Bar Chart',
+  //       path: '/bar-chart',
+  //     },
+  //   ],
+  // },
 ];

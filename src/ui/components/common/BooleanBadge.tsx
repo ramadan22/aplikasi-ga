@@ -3,6 +3,7 @@ import { cn } from '@/lib/classnames';
 interface BooleanBadgeProps {
   value: boolean | null | undefined;
   labels: [string, string]; // [labelUntukTrue, labelUntukFalse]
+  className?: string;
 }
 
 const booleanColors: Record<'true' | 'false', string> = {
@@ -15,12 +16,18 @@ const booleanColors: Record<'true' | 'false', string> = {
     'dark:bg-gray-100/15 dark:text-gray-600 dark:border-gray-800',
 };
 
-const BooleanBadge = ({ value, labels }: BooleanBadgeProps) => {
+const BooleanBadge = ({ value, labels, className }: BooleanBadgeProps) => {
   const key = value ? 'true' : 'false';
   const label = value ? labels[0] : labels[1];
 
   return (
-    <span className={cn('px-3 pt-1 pb-1.5 text-sm font-medium rounded-full', booleanColors[key])}>
+    <span
+      className={cn(
+        'px-3 pt-1 pb-1.5 text-sm font-medium rounded-full',
+        booleanColors[key],
+        className,
+      )}
+    >
       {label}
     </span>
   );

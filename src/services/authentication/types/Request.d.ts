@@ -18,3 +18,9 @@ export interface IPostChangePassword {
 }
 
 export type PostMutationChangePassword = MutationConfig<IProfile, IPostChangePassword>;
+
+export type PostResponseResetPassword = IProfile & {
+  plainPassword: string;
+};
+
+export type PostMutationResetPassword = MutationConfig<PostResponseResetPassword, { id }>;

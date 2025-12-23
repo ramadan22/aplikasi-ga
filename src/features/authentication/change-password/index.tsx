@@ -6,16 +6,18 @@ import { useSessionStore } from '@/lib/zustand/SessionStore';
 import ButtonWithSpinner from '@/ui/components/simple/button/ButtonWithSpinner';
 import Input from '@/ui/components/simple/form/input/InputField';
 import Label from '@/ui/components/simple/form/Label';
+import { useSearchParams } from 'next/navigation';
 import { Post } from './hooks/UseChangePassword';
 import UseForm from './hooks/UseForm';
 
 const FormChangePasswordFeature = () => {
+  const isFromProfilePage = useSearchParams().get('isFromProfilePage') === '1';
   const { updateValueSession } = useSessionStore();
 
   const { mutate: submitChangePassword, isPending } = Post({
     onSuccess: response => {
       updateValueSession(response?.data || null);
-      window.location.replace('/update-profile');
+      window.location.replace(!isFromProfilePage ? '/update-profile' : '/profile');
     },
     onError: err => {
       messageError(err.message);
@@ -23,6 +25,10 @@ const FormChangePasswordFeature = () => {
   });
 
   const {
+    oldPassword,
+    setOldPassword,
+    showOldPassword,
+    setShowOldPassword,
     newPassword,
     setNewPassword,
     showNewPassword,
@@ -37,7 +43,14 @@ const FormChangePasswordFeature = () => {
     <form
       onSubmit={event => {
         event.preventDefault();
-        submitChangePassword({ newPassword, confirmPassword });
+
+        const payload: { oldPassword?: string; newPassword: string; confirmPassword: string } = {
+          newPassword,
+          confirmPassword,
+        };
+
+        if (oldPassword) payload.oldPassword = oldPassword;
+        submitChangePassword(payload);
       }}
     >
       <div className="space-y-6">
@@ -50,6 +63,33 @@ const FormChangePasswordFeature = () => {
             not used elsewhere.
           </p>
         </div>
+        {isFromProfilePage && (
+          <div>
+            <Label>
+              Old Password&nbsp;
+              <span className="text-error-500">*</span>
+              &nbsp;
+            </Label>
+            <div className="relative">
+              <Input
+                placeholder="Enter your old password"
+                type={showOldPassword ? 'text' : 'password'}
+                defaultValue={oldPassword}
+                onChange={event => setOldPassword(event.target.value)}
+              />
+              <span
+                onClick={() => setShowOldPassword(!showOldPassword)}
+                className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
+              >
+                {showOldPassword ? (
+                  <EyeIcon className="fill-gray-500 dark:fill-gray-400" />
+                ) : (
+                  <EyeCloseIcon className="fill-gray-500 dark:fill-gray-400" />
+                )}
+              </span>
+            </div>
+          </div>
+        )}
         <div>
           <Label>
             New Password&nbsp;

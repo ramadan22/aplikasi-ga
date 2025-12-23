@@ -7,8 +7,8 @@ import StatisticsChart from '@/ui/components/highlight/StatisticsChart';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Next.js E-commerce Dashboard | TailAdmin - Next.js Dashboard Template',
-  description: 'This is Next.js Home for TailAdmin Dashboard Template',
+  title: 'General Affairs Administration',
+  description: 'Internal administration interface for managing GA modules and services.',
 };
 
 const HomePage = () => (

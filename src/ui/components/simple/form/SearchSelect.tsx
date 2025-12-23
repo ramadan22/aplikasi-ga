@@ -6,16 +6,19 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 type SelectOption = { label: string; value: string };
 
 type BaseProps = {
+  id?: string;
+  required?: boolean;
   data?: SelectOption[];
   onSearchNotFound?: (searchTerm: string) => void;
   disabledValues?: string[];
   debounceDelay?: number;
   className?: string;
   loading?: boolean;
-  onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
+  onBlur?: (e: HTMLInputElement | null) => void;
   placeholder?: string;
   size?: 'sm' | 'md' | 'lg';
   error?: boolean;
+  success?: boolean;
   hint?: string;
 };
 
@@ -33,9 +36,11 @@ type MultiSelectProps = BaseProps & {
 
 type SearchSelectProps = SingleSelectProps | MultiSelectProps;
 
-const DROPDOWN_ESTIMATED_HEIGHT = 300;
+const DROPDOWN_ESTIMATED_HEIGHT = 316;
 
 const SearchSelect: React.FC<SearchSelectProps> = ({
+  id,
+  required,
   data,
   selected,
   onSelect,
@@ -48,6 +53,7 @@ const SearchSelect: React.FC<SearchSelectProps> = ({
   onBlur,
   placeholder = 'Please Select',
   size,
+  success,
   error,
   hint,
 }) => {
@@ -58,7 +64,9 @@ const SearchSelect: React.FC<SearchSelectProps> = ({
   const [dropdownPosition, setDropdownPosition] = useState<'top' | 'bottom'>('bottom');
   const [animationState, setAnimationState] = useState<'closed' | 'opening' | 'opened'>('closed');
 
+  const inputRef = useRef<HTMLInputElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   const getSizeClass = (size: 'sm' | 'md' | 'lg' = 'md') => {
@@ -157,6 +165,9 @@ const SearchSelect: React.FC<SearchSelectProps> = ({
     const handleClickOutside = (e: MouseEvent) => {
       if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
         setOpen(false);
+        if (dropdownRef.current?.classList.contains('opacity-100')) {
+          if (onBlur) onBlur(inputRef.current);
+        }
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -182,6 +193,9 @@ const SearchSelect: React.FC<SearchSelectProps> = ({
   return (
     <div ref={wrapperRef} className={cn('relative w-full', className)}>
       <input
+        ref={inputRef}
+        id={id}
+        required={required}
         type="hidden"
         name="selectfield"
         value={
@@ -191,7 +205,6 @@ const SearchSelect: React.FC<SearchSelectProps> = ({
               : ''
             : (selected as SelectOption | null)?.value || ''
         }
-        onBlur={onBlur}
       />
 
       {/* Button */}
@@ -204,6 +217,7 @@ const SearchSelect: React.FC<SearchSelectProps> = ({
           sizeClasses.button,
           'dark:bg-gray-900 dark:border-gray-700 dark:text-white/90',
           selected ? 'text-gray-800 dark:text-white/90' : 'text-gray-400',
+          error && 'border-error-500',
         )}
       >
         {isMultiple ? (
@@ -243,6 +257,7 @@ const SearchSelect: React.FC<SearchSelectProps> = ({
 
       {/* Dropdown */}
       <div
+        ref={dropdownRef}
         className={cn(
           'absolute z-10 w-full border rounded-lg shadow-lg bg-white overflow-hidden transition-all duration-200 transform',
           dropdownPosition === 'top'
@@ -295,7 +310,7 @@ const SearchSelect: React.FC<SearchSelectProps> = ({
           </div>
         )}
 
-        <div className="px-2 pb-2">
+        <div className="px-2 pb-4">
           {filteredList.length > 0 ? (
             <ul className="max-h-60 overflow-auto mt-2 flex flex-col gap-y-1.5">
               {filteredList.map(item => {
@@ -329,7 +344,13 @@ const SearchSelect: React.FC<SearchSelectProps> = ({
       </div>
 
       {hint && (
-        <p className={`mt-1.5 text-xs ${error ? 'text-error-500' : 'text-gray-500'}`}>{hint}</p>
+        <p
+          className={`mt-1.5 text-xs ${
+            error ? 'text-error-500' : success ? 'text-success-500' : 'text-gray-500'
+          }`}
+        >
+          {hint}
+        </p>
       )}
     </div>
   );

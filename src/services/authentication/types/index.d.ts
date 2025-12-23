@@ -11,12 +11,14 @@ import { Role } from '@/constants/Role';
 // };
 
 export type IProfile = {
+  id: string;
   firstName: string;
   lastName: string;
+  email: string;
+  image: string;
   isActive: boolean;
   socialMedia: string[];
   role: Role;
-  teamLead: string | null;
   updatedAt: string | null;
   createdAt: string;
 };

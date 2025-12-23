@@ -28,6 +28,7 @@ export function ValidationForm<TSchema extends BaseSchema<any, any, any>>(schema
 
   const validateField = (form: FormType, field: string): string | undefined => {
     const result = safeParse(schema, form);
+
     if (!result.success) {
       const issue = result.issues.find(i => i.path?.[0]?.key === field);
       return issue?.message;

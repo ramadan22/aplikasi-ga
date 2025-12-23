@@ -11,8 +11,8 @@ import { buildQueryUrl } from '@/utils';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Dashboard | Management Approval',
-  description: 'This is Management Approval for Dashboard',
+  title: 'General Affairs Administration',
+  description: 'Internal administration interface for managing GA modules and services.',
 };
 
 const ApprovalPage = async ({

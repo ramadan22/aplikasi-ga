@@ -13,13 +13,13 @@ const UserDropdown = () => {
 
   const [isOpen, setIsOpen] = useState(false);
 
-  const toggleDropdown = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    e.stopPropagation();
+  const toggleDropdown = (e?: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    if (e) e.stopPropagation();
     setIsOpen(prev => !prev);
   };
 
-  const closeDropdown = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    toggleDropdown(e);
+  const closeDropdown = () => {
+    toggleDropdown();
     setIsOpen(false);
   };
 
@@ -38,7 +38,7 @@ const UserDropdown = () => {
           <DefaultImage
             fill
             className="object-cover bg-[length:100%_100%] bg-no-repeat"
-            src={loginData?.user.image}
+            src={loginData?.user.image || undefined}
             alt="User"
           />
         </span>
@@ -48,7 +48,7 @@ const UserDropdown = () => {
             <span className="block animate-pulse bg-gray-200 dark:bg-gray-200/2 w-24 h-6 rounded" />
           )}
           {loginData?.user.firstName &&
-            (loginData?.user.firstName || '') + '' + (loginData?.user.lastName || '')}
+            (loginData?.user.firstName || '') + ' ' + (loginData?.user.lastName || '')}
         </span>
 
         <svg
@@ -76,21 +76,12 @@ const UserDropdown = () => {
         onClose={closeDropdown}
         className="absolute right-0 mt-[17px] flex w-[260px] flex-col rounded-2xl border border-gray-200 bg-white p-3 shadow-theme-lg dark:border-gray-800 dark:bg-gray-dark"
       >
-        <div>
-          <span className="block font-medium text-gray-700 text-theme-sm dark:text-gray-400">
-            Musharof Chowdhury
-          </span>
-          <span className="mt-0.5 block text-theme-xs text-gray-500 dark:text-gray-400">
-            randomuser@pimjo.com
-          </span>
-        </div>
-
-        <ul className="flex flex-col gap-1 pt-4 pb-3 border-b border-gray-200 dark:border-gray-800">
+        <ul className="flex flex-col gap-1 pt-1 pb-3 border-b border-gray-200 dark:border-gray-800">
           <li>
             <DropdownItem
               onItemClick={closeDropdown}
               tag="a"
-              href="/profile"
+              href="/update-profile"
               className="flex items-center gap-3 px-3 py-2 font-medium text-gray-700 rounded-lg group text-theme-sm hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
             >
               <svg

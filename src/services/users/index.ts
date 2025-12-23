@@ -1,9 +1,9 @@
 import AxiosInstance from '@/lib/axios';
+import { formatDateToWIB } from '@/lib/date-fns';
 import { ResponseApiTypes } from '@/types/ResponseApi';
 import { removeObjectKeys } from '@/utils';
-import { User } from 'next-auth';
 import { IUser } from './types';
-import { GetParams } from './types/Request';
+import { GetParams, IPostParams, IPutParams, IPutResponse } from './types/Request';
 
 const queries = {
   GET_USERS: 'GET_USERS',
@@ -12,16 +12,22 @@ const queries = {
 
 const get = async (params: GetParams = {}): Promise<ResponseApiTypes<IUser[]>> =>
   new Promise((resolve, reject) => {
-    const updateParams = removeObjectKeys(params, ['exceptUserId']);
+    const size = params.limit;
+    const updateParams = removeObjectKeys(params, ['exceptUserId', 'limit']);
 
     AxiosInstance.get('/users', {
-      params: updateParams,
+      params: {
+        ...updateParams,
+        size,
+      },
     })
       .then(response => {
         const map = (response.data.data as IUser[])
           .filter(row => row.id !== params.exceptUserId)
           .map(res => ({
             ...res,
+            createdAt: formatDateToWIB(res.createdAt),
+            updatedAt: res.updatedAt ? formatDateToWIB(res.updatedAt) : null,
           }));
 
         resolve({
@@ -32,10 +38,15 @@ const get = async (params: GetParams = {}): Promise<ResponseApiTypes<IUser[]>> =
       .catch(error => reject(error?.response?.data || error));
   });
 
-const getProfile = async (token?: string) =>
-  new Promise<ResponseApiTypes<User>>((resolve, reject) => {
+const post = async (params: IPostParams) =>
+  AxiosInstance.post('/users/register', params).then(response => response?.data || null);
+
+const getProfile = async (token?: string, id?: string) =>
+  new Promise<ResponseApiTypes<IUser>>((resolve, reject) => {
     const configHeaders = {} as { Authorization: string };
-    const url = token ? `${process.env.NEXT_PUBLIC_API_URL}/api/users/profile` : '/users/profile';
+    let url = token ? `${process.env.NEXT_PUBLIC_API_URL}/api/users/profile` : '/users/profile';
+
+    if (id) url += `/${id}`;
 
     if (token) {
       configHeaders.Authorization = `Bearer ${token}`;
@@ -48,4 +59,11 @@ const getProfile = async (token?: string) =>
       .catch(error => reject(error));
   });
 
-export { get, getProfile, queries };
+const update = async (params: IPutParams): Promise<IPutResponse> => {
+  const id = params.id;
+  return AxiosInstance.put(`/users/${id}`, removeObjectKeys({ ...params }, ['id'])).then(
+    response => response?.data || null,
+  );
+};
+
+export { get, getProfile, post, queries, update };

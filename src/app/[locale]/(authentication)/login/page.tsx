@@ -4,8 +4,8 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'Next.js SignIn Page | TailAdmin - Next.js Dashboard Template',
-  description: 'This is Next.js Signin Page TailAdmin Dashboard Template',
+  title: 'General Affairs Administration',
+  description: 'Internal administration interface for managing GA modules and services.',
 };
 
 const LoginPage = () => (

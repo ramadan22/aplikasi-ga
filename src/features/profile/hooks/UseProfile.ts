@@ -1,9 +1,19 @@
-import { getProfile, queries } from '@/services/users';
-import { useQuery } from '@tanstack/react-query';
+import { getProfile, queries, update } from '@/services/users';
+import { PutMutationOptions } from '@/services/users/types/Request';
+import { useMutation, useQuery } from '@tanstack/react-query';
 
-export const Get = () =>
+interface Props {
+  id?: string;
+}
+
+export const Get = ({ id }: Props) =>
   useQuery({
-    queryKey: [queries.GET_PROFILE],
-    queryFn: () => getProfile(),
-    refetchInterval: false,
+    queryKey: [queries.GET_PROFILE, id],
+    queryFn: () => getProfile(undefined, id),
+  });
+
+export const UpdateProfile = (options?: PutMutationOptions) =>
+  useMutation({
+    mutationFn: update,
+    ...options,
   });

@@ -44,7 +44,12 @@ const Select: React.FC<SelectProps> = ({
         onChange={handleChange}
       >
         {/* Placeholder option */}
-        <option value="" disabled className="text-gray-400 dark:bg-gray-900 dark:text-white/30">
+        <option
+          hidden
+          value=""
+          disabled
+          className="text-gray-400 dark:bg-gray-900 dark:text-white/30"
+        >
           {placeholder}
         </option>
         {/* Map over options */}

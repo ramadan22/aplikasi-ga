@@ -63,6 +63,7 @@ function getAllowedRolesForPath(pathname: string): Role[] | undefined {
 }
 
 export async function middleware(req: NextRequest) {
+  const isFromProfilePage = req.nextUrl.searchParams.get('isFromProfilePage');
   const { pathname } = req.nextUrl;
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
   const isAuth = !!token;
@@ -112,7 +113,7 @@ export async function middleware(req: NextRequest) {
     response = NextResponse.redirect(new URL(`/${currentLocale}/change-password`, req.url));
   }
 
-  if (isChangePasswordPage && isAuth && token?.isActive) {
+  if (isChangePasswordPage && isAuth && token?.isActive && !isFromProfilePage) {
     response = NextResponse.redirect(new URL(`/${currentLocale}/update-profile`, req.url));
   }
 

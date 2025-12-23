@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import { defaultParams } from '@/data/Table';
 import { messageSuccess } from '@/lib/react-toastify';
 import { ICategory } from '@/services/category/types';
-import DeleteConfirmModal from '@/ui/components/common/ModalConfirm';
+import ModalConfirm from '@/ui/components/common/ModalConfirm';
 import TableDataUI from '@/ui/components/common/TableData';
 import { Modal } from '@/ui/components/simple/modal';
 import { useModal } from '@/utils/UseModal';
@@ -61,7 +61,7 @@ const CategoriesFeature = ({ params }: Props) => {
           total: categories?.meta?.total || 0,
         }}
       />
-      <DeleteConfirmModal
+      <ModalConfirm
         isOpen={action.type === 'delete'}
         onClose={() => modalClosed()}
         onConfirm={() => deleteData(action.id as string)}

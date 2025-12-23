@@ -3,8 +3,8 @@ import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 
 import { defaultParams } from '@/data/Table';
-import AssetsFeature from '@/features/assets/AssetByNameFeature';
-import { getByName, queries } from '@/services/asset';
+import UsersFeature from '@/features/users';
+import { get, queries } from '@/services/users';
 import ComponentCard from '@/ui/components/common/ComponentCard';
 import PageBreadcrumb from '@/ui/components/common/PageBreadCrumb';
 import { buildQueryUrl } from '@/utils';
@@ -15,19 +15,16 @@ export const metadata: Metadata = {
   description: 'Internal administration interface for managing GA modules and services.',
 };
 
-const AssetsPage = async ({
-  params,
+const UsersPage = async ({
   searchParams,
 }: {
-  params: Promise<{ name: string }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) => {
-  const { name } = await params;
-  const query = await searchParams;
+  const params = await searchParams;
   const header = await headers();
   const pathname = header.get('x-pathname') || '';
 
-  if (query?.page === undefined || query?.limit === undefined) {
+  if (params?.page === undefined || params?.limit === undefined) {
     const url = buildQueryUrl(pathname, { page: defaultParams.page, limit: defaultParams.size });
     redirect(url);
   }
@@ -35,23 +32,17 @@ const AssetsPage = async ({
   const queryClient = new QueryClient();
 
   await queryClient.prefetchQuery({
-    queryKey: [queries.GET_ASSETS_BY_NAME, { ...query, name }],
-    queryFn: () => getByName({ ...query, name }),
+    queryKey: [queries.GET_USERS, params],
+    queryFn: () => get(params),
   });
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <div>
-        <PageBreadcrumb
-          pageTitle={`Assets Data ${decodeURIComponent(name)}`}
-          breadCrumbs={[
-            { text: 'Assets Data', url: '/assets' },
-            { text: decodeURIComponent(name), url: '' },
-          ]}
-        />
+        <PageBreadcrumb pageTitle="User Data" breadCrumbs={[{ text: 'User Data', url: '' }]} />
         <div className="space-y-6">
           <ComponentCard>
-            <AssetsFeature params={query} />
+            <UsersFeature params={params} />
           </ComponentCard>
         </div>
       </div>
@@ -59,4 +50,4 @@ const AssetsPage = async ({
   );
 };
 
-export default AssetsPage;
+export default UsersPage;

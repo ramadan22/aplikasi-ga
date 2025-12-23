@@ -23,7 +23,7 @@ const DefaultImage = ({ src, size = 20, alt = 'Profile', ...props }: ProfileProp
     }
   }, [src]);
 
-  if (src !== undefined && (isError || !validSrc)) {
+  if ((src === '' || src === null || src === undefined) && (isError || !validSrc)) {
     return <SlPicture size={size} className={props.className} />;
   }
 
@@ -31,6 +31,7 @@ const DefaultImage = ({ src, size = 20, alt = 'Profile', ...props }: ProfileProp
     return (
       <Image
         {...props}
+        draggable={false}
         src={validSrc}
         alt={alt}
         onError={() => {

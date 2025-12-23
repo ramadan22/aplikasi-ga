@@ -44,7 +44,7 @@ const UseForm = (data: IApproval | undefined) => {
       ? { label: SubmissionTypeLabel[data?.submissionType], value: data?.submissionType }
       : null,
     status: data?.status || null,
-    notes: '',
+    notes: data?.notes || '',
     approvedBy: [],
     requestedFor: null,
     assetRequest: [defaultAssetRequest],
@@ -165,6 +165,7 @@ const UseForm = (data: IApproval | undefined) => {
     }));
 
     const payload = {
+      id: approval?.id || null,
       notes: approval.notes,
       submissionType: approval.submissionType?.value as SubmissionType,
       requestedForId: approval.requestedFor?.value || '',
