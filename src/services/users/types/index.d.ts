@@ -6,6 +6,7 @@ export interface IUser {
   lastName: string;
   email: string;
   image: string;
+  imageId: string;
   isActive: boolean;
   socialMedia: string[];
   role: Role;

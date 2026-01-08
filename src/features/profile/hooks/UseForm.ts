@@ -1,37 +1,51 @@
 import { Role } from '@/constants/Role';
 import { useState } from 'react';
-import { IDataDetail } from '../types';
+import { IDataDetail, IForm, IProfileImage } from '../types';
 
 const UseForm = () => {
-  const [form, setForm] = useState<Partial<IDataDetail>>({
+  const [form, setForm] = useState<IForm>({
     firstName: '',
     lastName: '',
     phone: '',
-    image: '',
+    image: null,
   });
+
+  const handleInitValue = (data: IDataDetail) => {
+    setForm({
+      firstName: data.firstName,
+      lastName: data.lastName || '',
+      phone: data.phone || '',
+      image: data.imageId
+        ? {
+            id: data?.imageId || '',
+            url: data.image || '',
+          }
+        : null,
+    });
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
     setForm(prev => ({ ...prev, [id]: value }));
   };
 
-  const handleChangeImage = (value: string) => {
+  const handleChangeImage = (value: IProfileImage) => {
     setForm(prev => ({
       ...prev,
       image: value,
     }));
   };
 
-  const convertFormPayload = (formParams: Partial<IDataDetail>) => {
+  const convertFormPayload = (data: Partial<IDataDetail> | undefined) => {
     return {
-      id: formParams?.id || '',
-      firstName: formParams.firstName || '',
-      lastName: formParams.lastName || '',
-      email: formParams.email || '',
-      image: formParams.image || '',
+      id: data?.id || '',
+      firstName: form.firstName || '',
+      lastName: form.lastName || '',
+      email: data?.email || '',
+      imageId: form.image?.id || '',
       // phoneNumber: formParams.phone || '',
-      socialMedia: formParams.socialMedia || ([] as string[]),
-      role: formParams.role || Role.STAFF,
+      socialMedia: data?.socialMedia || ([] as string[]),
+      role: data?.role || Role.STAFF,
     };
   };
 
@@ -41,6 +55,7 @@ const UseForm = () => {
     handleChange,
     handleChangeImage,
     convertFormPayload,
+    handleInitValue,
   };
 };
 

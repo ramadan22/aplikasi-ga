@@ -21,7 +21,10 @@ const queries = {
 const get = async (params: GetParams = {}): Promise<GetResponse> =>
   new Promise((resolve, reject) => {
     AxiosInstance.get('/assets', {
-      params,
+      params: {
+        ...params,
+        size: params.limit,
+      },
     })
       .then(response => resolve(response.data))
       .catch(error => reject(error?.response?.data || error));
@@ -30,7 +33,10 @@ const get = async (params: GetParams = {}): Promise<GetResponse> =>
 const getByName = async (params: GetParams = {}): Promise<GetResponseAssetsByName> =>
   new Promise((resolve, reject) => {
     AxiosInstance.get(`/assets/${params.name}`, {
-      params: removeObjectKeys(params, ['name']),
+      params: {
+        ...removeObjectKeys(params, ['name']),
+        size: params.limit,
+      },
     })
       .then(response => {
         const map = (response.data.data as IAssetByName[]).map(res => ({

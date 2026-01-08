@@ -14,7 +14,7 @@ const DefaultImage = ({ src, size = 20, alt = 'Profile', ...props }: ProfileProp
   const [isError, setIsError] = useState(false);
 
   useEffect(() => {
-    if (src && src.trim() !== '') {
+    if (src && `${src}`?.trim() !== '') {
       setValidSrc(src);
       setIsError(false);
     } else {

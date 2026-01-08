@@ -30,7 +30,7 @@ interface IPutParams {
   lastName: string;
   email: string;
   role: Role;
-  image: string;
+  imageId: string;
   // phoneNumber: string;
   socialMedia: string[];
 }

@@ -42,7 +42,7 @@ const UsersFeature = ({ params }: Props) => {
   };
 
   const sendEmail = () => {
-    console.log('here');
+    // console.log('here');
   };
 
   return (

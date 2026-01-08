@@ -9,6 +9,19 @@ type IDataDetail = {
   role: Role | null;
   socialMedia: string[];
   image?: string;
+  imageId?: string;
+};
+
+export type IProfileImage = {
+  id: string;
+  url: string;
+} | null;
+
+type IForm = {
+  firstName: string;
+  lastName: string;
+  phone: string;
+  image: IProfileImage;
 };
 
 export interface PropsDetail {

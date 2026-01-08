@@ -20,7 +20,7 @@ const Form = () => {
   const { isFromProfilePage, clear } = useUpdateProfile();
   const { update: updateSession } = useSession();
 
-  const { form, setForm, handleChange, handleChangeImage, convertFormPayload } = UseForm();
+  const { form, handleChange, handleChangeImage, convertFormPayload, handleInitValue } = UseForm();
 
   const { data: profile, isLoading } = Get({});
 
@@ -28,7 +28,7 @@ const Form = () => {
     onSuccess: res => {
       updateSession(res.data || null);
       messageSuccess(res.message);
-      router.replace(!isFromProfilePage ? '/' : '/profile');
+      window.location.href = !isFromProfilePage ? '/' : '/profile';
       clear();
     },
     onError: err => {
@@ -37,7 +37,7 @@ const Form = () => {
   });
 
   useEffect(() => {
-    if (!isLoading && profile?.data) setForm(profile.data);
+    if (!isLoading && profile?.data) handleInitValue(profile.data);
   }, [profile, isLoading]);
 
   useEffect(() => {
@@ -58,10 +58,7 @@ const Form = () => {
         // const result = validate(e);
         e.preventDefault();
 
-        const payload = convertFormPayload({
-          ...profile?.data,
-          ...form,
-        });
+        const payload = convertFormPayload(profile?.data || undefined);
 
         update(payload);
       }}
@@ -130,8 +127,8 @@ const Form = () => {
             id="image"
             usage="assets"
             type="image"
-            value={form?.image || ''}
-            handleChange={data => handleChangeImage(data?.url || '')}
+            value={form?.image?.url || ''}
+            handleChange={data => handleChangeImage({ id: data?.id || '', url: data?.url || '' })}
             // error={!!errors.image}
             // hint={errors.image}
           />

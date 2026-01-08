@@ -14,9 +14,7 @@ const UpdateSessionProvider = ({ children }: Props) => {
   const { update } = useSession();
 
   useEffect(() => {
-    console.log('here');
     if (valueSession) {
-      console.log('valueSession', valueSession);
       update({ isActive: valueSession.isActive });
       updateValueSession(null);
     }
