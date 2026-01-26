@@ -6,6 +6,7 @@ import { useSessionStore } from '@/lib/zustand/SessionStore';
 import ButtonWithSpinner from '@/ui/components/simple/button/ButtonWithSpinner';
 import Input from '@/ui/components/simple/form/input/InputField';
 import Label from '@/ui/components/simple/form/Label';
+import { ErrorConvertToMessage } from '@/utils';
 import { useSearchParams } from 'next/navigation';
 import { Post } from './hooks/UseChangePassword';
 import UseForm from './hooks/UseForm';
@@ -20,7 +21,7 @@ const FormChangePasswordFeature = () => {
       window.location.replace(!isFromProfilePage ? '/update-profile' : '/profile');
     },
     onError: err => {
-      messageError(err.message);
+      messageError(ErrorConvertToMessage(err));
     },
   });
 

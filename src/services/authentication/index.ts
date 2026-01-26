@@ -44,9 +44,11 @@ export const setTokenCookie = async ({
   });
 
 export const changePassword = async (params: IPostChangePassword) =>
-  AxiosInstance.post('/authentication/change-password', params).then(
-    response => response?.data || null,
-  );
+  new Promise<PostResponseLogin>((resolve, reject) => {
+    AxiosInstance.post<PostResponseLogin>('/authentication/change-password', params)
+      .then(response => resolve(response.data))
+      .catch(error => reject(error));
+  });
 
 export const resetPassword = async (params: { id: string }) =>
   AxiosInstance.post('/authentication/reset-password', params).then(
